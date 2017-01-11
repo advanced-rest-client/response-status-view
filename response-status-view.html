@@ -90,8 +90,11 @@ Custom property | Description | Default
       @apply(--layout-horizontal);
       @apply(--arc-font-subhead);
       @apply(--layout-center);
-      padding: 0 24px;
       min-height: 56px;
+    }
+
+    .status-row {
+      border-bottom: 1px #e5e5e5 solid;
     }
 
     .timings-row {
@@ -109,6 +112,10 @@ Custom property | Description | Default
       @apply(--layout-center);
     }
 
+    .status-value > span {
+      display: block;
+    }
+
     .status-value.status {
       padding: 0 16px;
     }
@@ -118,21 +125,7 @@ Custom property | Description | Default
       @apply(--layout-flex);
     }
 
-    .status-color {
-      color: var(--arc-status-code-color-200, rgba(56, 142, 60, 1));
-    }
 
-    .status-color.info {
-      color: var(--arc-status-code-color-300, rgba(48, 63, 159, 1));
-    }
-
-    .status-color.warning {
-      color: var(--arc-status-code-color-400, rgba(245, 124, 0, 1));
-    }
-
-    .status-color.error {
-      color: var(--arc-status-code-color-500, rgba(211, 47, 47, 1));
-    }
 
     .no-redirects-container {
       @apply(--layout-vertical);
@@ -179,21 +172,44 @@ Custom property | Description | Default
     .status-value.status.text > span:not(:first-child) {
       margin-left: 8px;
     }
+
+    .status-code-value {
+      padding: 4px 8px;
+      color: #fff;
+      border-radius: 2px;
+      background-color: var(--arc-status-code-color-200, rgba(56, 142, 60, 1));
+    }
+
+    .info.status-code-value {
+      background-color: var(--arc-status-code-color-300, rgba(48, 63, 159, 1));
+    }
+
+    .warning.status-code-value {
+      background-color: var(--arc-status-code-color-400, rgba(245, 124, 0, 1));
+    }
+
+    .error.status-code-value {
+      background-color: var(--arc-status-code-color-500, rgba(211, 47, 47, 1));
+    }
+
+    .response-time {
+      color: var(--response-status-view-loading-time-color, rgba(0, 0, 0, 0.54));
+    }
+
     </style>
     <div class="status-row">
-      <div class="status-label text">Status:</div>
+
       <div class="status-value status text">
         <template is="dom-if" if="[[!isError]]">
-          <span class$="[[_computeStatusClass(statusCode)]]">
-            <span>[[statusCode]]</span><span hidden$="[[!statusMessage]]">: [[statusMessage]]</span>
-          </span>
-          <span class="text" hidden$="[[!loadingTime]]">Loading time: [[loadingTime]] ms</span>
+          <span class$="[[_computeStatusClass(statusCode)]]">[[statusCode]] [[statusMessage]]</span>
+          <span class="response-time text" hidden$="[[!loadingTime]]">[[_roundTime(loadingTime)]] ms</span>
         </template>
         <template is="dom-if" if="[[isError]]">
           <p>Error in the response.</p>
         </template>
       </div>
     </div>
+    <!-- TODO: add colapcable here -->
     <paper-tabs selected="{{selectedTab}}" id="tabs">
       <template is="dom-if" if="[[hasResponseHeaders]]">
         <paper-tab>
@@ -405,7 +421,7 @@ Custom property | Description | Default
     },
 
     _computeStatusClass: function(code) {
-      var cls = 'status-color';
+      var cls = 'status-code-value';
       if (code >= 500 || code === 0) {
         cls += ' error';
       }
@@ -500,6 +516,14 @@ Custom property | Description | Default
     _httpMessageChanged: function(message) {
       var status = !!message;
       this._setHasHttpMessage(status);
+    },
+
+    _roundTime: function(num) {
+      num = Number(num);
+      if (num !== num) {
+        return '';
+      }
+      return num.toFixed(2);
     }
   });
   </script>
