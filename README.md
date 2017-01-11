@@ -49,9 +49,13 @@ Custom property | Description | Default
 `--arc-status-code-color-300` | Color of the 300 status code (ARC theme option) | `rgba(48, 63, 159, 1)` |
 `--arc-status-code-color-400` | Color of the 400 status code (ARC theme option) | `rgba(245, 124, 0, 1)` |
 `--arc-status-code-color-500` | Color of the 500 status code (ARC theme option) | `rgba(211, 47, 47, 1)` |
-`--arc-font-subhead` |  | `{}`
-`--no-info-message` | | `{}`
-`--arc-font-code1` | | `{}`
-`--response-status-view-badge-background` | | `--accent-color`
-`--response-status-view-badge-color` | | `#fff`
+`--arc-font-subhead` | Mixin applied to sub headers (low implortance headers). It's a theme mixin. | `{}`
+`--no-info-message` | Mixin applied to the messages information that there's no information available. | `{}`
+`--arc-font-code1` | Mixin applied to the source message. It's a theme mixin. | `{}`
+`--response-status-view-badge-color` | Color of the badge with number of the headers / redirections in advanced view | `#fff`
+`--response-status-view-badge-background` | Background color of the badge with number of the headers / redirections in advanced view | `--accent-color`
+`--response-status-view-empty-badge-color` | Color of the badge with number of the headers / redirections in advanced view | `#fff`
+`--response-status-view-empty-badge-background` | Background color of the badge with number of the headers / redirections in advanced view | `#9e9e9e`
+`--response-status-view-status-info-border-color` | Border color separating status from the response headers | `#e5e5e5`
+`--response-status-view-status-container` | Mixin applied to the status row in the main view and in the redirects view (in advanced mode). | `{}`
 
