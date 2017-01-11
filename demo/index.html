@@ -32,6 +32,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <style is="custom-style" include="demo-pages-shared-styles">
 
+    :root {
+      --main-section-block: {
+        background-color: #fff;
+        padding: 40px;
+        margin-bottom: 40px;
+        @apply(--shadow-elevation-4dp);
+      }
+    }
+
+    body {
+      background-color: #EEEEEE;
+    }
+
     .vertical-section-container {
       max-width: 900px;
     }
@@ -64,82 +77,94 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       padding: 16px;
     }
 
+    .response-data-form {
+      @apply(--main-section-block);
+    }
+
+    .response-status-section {
+      background-color: #ffffff;
+      padding: 40px;
+      @apply(--main-section-block);
+    }
+
   </style>
 </head>
 <body unresolved>
   <template is="dom-bind" id="app">
     <div class="vertical-section-container centered">
-      <p class="info">Set up the request / response data.</p>
-      <paper-checkbox checked="{{isXhr}}">XHR type of request</paper-checkbox>
-      <paper-tabs selected="{{selectedTab}}">
-        <paper-tab>Basic settings</paper-tab>
-        <paper-tab hidden$="[[isXhr]]">Response timings</paper-tab>
-        <paper-tab hidden$="[[isXhr]]">Redirect headers</paper-tab>
-        <paper-tab hidden$="[[isXhr]]">Redirect timings</paper-tab>
-      </paper-tabs>
-      <iron-pages selected="[[selectedTab]]">
-        <section>
-          <div class="row">
-            <paper-input class="status-code-input" type="number" value="{{statusCode}}" step="1" min="100" max="599" label="Status code" required auto-validate></paper-input>
-            <paper-input type="text" value="{{statusMessage}}" label="Status message"></paper-input>
-          </div>
-          <div class="row">
-            <paper-textarea label="Request headers" value="{{requestHeaders}}"></paper-textarea>
-          </div>
-          <div class="row">
-            <paper-textarea label="Response headers" value="{{responseHeaders}}"></paper-textarea>
-          </div>
-          <div class="row">
-            <paper-input type="number" value="{{loadingTime}}" step="0.001" min="1" label="Total loading time"></paper-input>
-          </div>
-        </section>
-        <section hidden$="[[isXhr]]">
-          <div class="redirect-timings-form">
+      <h3>Display data form</h3>
+      <section class="response-data-form">
+        <p class="info">Set up the request / response data.</p>
+        <paper-checkbox checked="{{isXhr}}">XHR type of request</paper-checkbox>
+        <paper-tabs selected="{{selectedTab}}">
+          <paper-tab>Basic settings</paper-tab>
+          <paper-tab hidden$="[[isXhr]]">Response timings</paper-tab>
+          <paper-tab hidden$="[[isXhr]]">Redirect headers</paper-tab>
+          <paper-tab hidden$="[[isXhr]]">Redirect timings</paper-tab>
+        </paper-tabs>
+        <iron-pages selected="[[selectedTab]]">
+          <section>
             <div class="row">
-              <paper-input type="number" value="{{timings.connect}}" step="0.0001" label="Connect"></paper-input>
-              <paper-input type="number" value="{{timings.send}}" step="0.0001" label="Send"></paper-input>
-              <paper-input type="number" value="{{timings.wait}}" step="0.0001" label="Wait time"></paper-input>
-              <paper-input type="number" value="{{timings.receive}}" step="0.0001" label="Receive time"></paper-input>
+              <paper-input class="status-code-input" type="number" value="{{statusCode}}" step="1" min="100" max="599" label="Status code" required auto-validate></paper-input>
+              <paper-input type="text" value="{{statusMessage}}" label="Status message"></paper-input>
             </div>
             <div class="row">
-              <paper-input type="number" value="{{timings.blocked}}" step="0.0001" label="Blocked"></paper-input>
-              <paper-input type="number" value="{{timings.dns}}" step="0.0001" label="DNS"></paper-input>
-              <paper-input type="number" value="{{timings.ssl}}" step="0.0001" label="SSL"></paper-input>
+              <paper-textarea label="Request headers" value="{{requestHeaders}}"></paper-textarea>
             </div>
-          </div>
-        </section>
-        <section hidden$="[[isXhr]]">
-          <template is="dom-repeat" items="{{redirects}}">
             <div class="row">
-              <paper-input class="status-code-input" type="number" value="{{item.status}}" step="1" min="100" max="599" label="Status code" required auto-validate></paper-input>
-              <paper-input type="text" value="{{item.statusText}}" label="Status message"></paper-input>
+              <paper-textarea label="Response headers" value="{{responseHeaders}}"></paper-textarea>
             </div>
-            <paper-textarea label="Redirect headers #[[index]]" value="{{item.headers}}"></paper-textarea>
-          </template>
-          <paper-button on-tap="addRedirectHeader">Add redirect headers</paper-button>
-        </section>
-        <section hidden$="[[isXhr]]">
-          <template is="dom-repeat" items="{{redirectTimings}}">
+            <div class="row">
+              <paper-input type="number" value="{{loadingTime}}" step="0.001" min="1" label="Total loading time"></paper-input>
+            </div>
+          </section>
+          <section hidden$="[[isXhr]]">
             <div class="redirect-timings-form">
               <div class="row">
-                <paper-input type="number" value="{{item.connect}}" step="0.0001" label="Connect"></paper-input>
-                <paper-input type="number" value="{{item.send}}" step="0.0001" label="Send"></paper-input>
-                <paper-input type="number" value="{{item.wait}}" step="0.0001" label="Wait time"></paper-input>
-                <paper-input type="number" value="{{item.receive}}" step="0.0001" label="Receive time"></paper-input>
+                <paper-input type="number" value="{{timings.connect}}" step="0.0001" label="Connect"></paper-input>
+                <paper-input type="number" value="{{timings.send}}" step="0.0001" label="Send"></paper-input>
+                <paper-input type="number" value="{{timings.wait}}" step="0.0001" label="Wait time"></paper-input>
+                <paper-input type="number" value="{{timings.receive}}" step="0.0001" label="Receive time"></paper-input>
               </div>
               <div class="row">
-                <paper-input type="number" value="{{item.blocked}}" step="0.0001" label="Blocked"></paper-input>
-                <paper-input type="number" value="{{item.dns}}" step="0.0001" label="DNS"></paper-input>
-                <paper-input type="number" value="{{item.ssl}}" step="0.0001" label="SSL"></paper-input>
+                <paper-input type="number" value="{{timings.blocked}}" step="0.0001" label="Blocked"></paper-input>
+                <paper-input type="number" value="{{timings.dns}}" step="0.0001" label="DNS"></paper-input>
+                <paper-input type="number" value="{{timings.ssl}}" step="0.0001" label="SSL"></paper-input>
               </div>
             </div>
-          </template>
-          <paper-button on-tap="addRedirectTimings">Add redirect timings</paper-button>
-        </section>
-      </iron-pages>
-
+          </section>
+          <section hidden$="[[isXhr]]">
+            <template is="dom-repeat" items="{{redirects}}">
+              <div class="row">
+                <paper-input class="status-code-input" type="number" value="{{item.status}}" step="1" min="100" max="599" label="Status code" required auto-validate></paper-input>
+                <paper-input type="text" value="{{item.statusText}}" label="Status message"></paper-input>
+              </div>
+              <paper-textarea label="Redirect headers #[[index]]" value="{{item.headers}}"></paper-textarea>
+            </template>
+            <paper-button on-tap="addRedirectHeader">Add redirect headers</paper-button>
+          </section>
+          <section hidden$="[[isXhr]]">
+            <template is="dom-repeat" items="{{redirectTimings}}">
+              <div class="redirect-timings-form">
+                <div class="row">
+                  <paper-input type="number" value="{{item.connect}}" step="0.0001" label="Connect"></paper-input>
+                  <paper-input type="number" value="{{item.send}}" step="0.0001" label="Send"></paper-input>
+                  <paper-input type="number" value="{{item.wait}}" step="0.0001" label="Wait time"></paper-input>
+                  <paper-input type="number" value="{{item.receive}}" step="0.0001" label="Receive time"></paper-input>
+                </div>
+                <div class="row">
+                  <paper-input type="number" value="{{item.blocked}}" step="0.0001" label="Blocked"></paper-input>
+                  <paper-input type="number" value="{{item.dns}}" step="0.0001" label="DNS"></paper-input>
+                  <paper-input type="number" value="{{item.ssl}}" step="0.0001" label="SSL"></paper-input>
+                </div>
+              </div>
+            </template>
+            <paper-button on-tap="addRedirectTimings">Add redirect timings</paper-button>
+          </section>
+        </iron-pages>
+      </section>
       <h3>The `response-status-view`</h3>
-      <section>
+      <section class="response-status-section">
         <response-status-view
           status-code="[[statusCode]]"
           status-message="[[statusMessage]]"
