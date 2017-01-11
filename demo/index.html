@@ -27,6 +27,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <link rel="import" href="../../iron-pages/iron-pages.html">
   <link rel="import" href="../../paper-button/paper-button.html">
   <link rel="import" href="../../paper-checkbox/paper-checkbox.html">
+  <link rel="import" href="../../arc-definitions/arc-definitions.html">
 
   <link rel="import" href="../response-status-view.html">
 
@@ -178,6 +179,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           is-xhr="[[isXhr]]"></response-status-view>
       </section>
     </div>
+    <arc-definitions></arc-definitions>
   </template>
 
   <script>
@@ -192,7 +194,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     app.responseHeaders = initHeaders;
     app.redirects = [];
     app.redirectTimings = [];
-    app.timings = {};
+    app.timings = {
+      connect: 12.1345,
+      send: 2.12,
+      wait: 135.15,
+      receive: 112.412
+    };
     app.isXhr = false;
 
     app._computeHttpMessage = function(headers) {
