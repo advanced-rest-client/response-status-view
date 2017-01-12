@@ -229,6 +229,11 @@ Custom property | Description | Default
     .redirect-location {
       margin-left: 8px;
     }
+
+    .response-error-label {
+      margin-left: 12px;
+      color: var(--arc-status-code-color-500, rgba(211, 47, 47, 1));
+    }
     </style>
     <div class="status-row">
       <div class="status-value status">
@@ -245,7 +250,9 @@ Custom property | Description | Default
           </div>
         </template>
         <template is="dom-if" if="[[isError]]">
-          <p>Error in the response.</p>
+          <span class="error status-code-value">0</span>
+          <span class="response-time" hidden$="[[!loadingTime]]">[[_roundTime(loadingTime)]] ms</span>
+          <p class="response-error-label">Error in the response.</p>
         </template>
       </div>
     </div>
@@ -265,7 +272,6 @@ Custom property | Description | Default
             <span class$="[[_computeBageClass(redirects.length)]]">[[redirects.length]]</span>
           </paper-tab>
           <paper-tab>Timings</paper-tab>
-
         </paper-tabs>
         <iron-pages selected="[[selectedTab]]">
           <headers-list-view on-tap="_handleLink" headers="[[responseHeaders]]"></headers-list-view>

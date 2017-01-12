@@ -1,3 +1,19 @@
+<a name="0.1.6"></a>
+## [0.1.6](https://github.com/advanced-rest-client/response-status-view/compare/0.1.4...v0.1.6) (2017-01-12)
+
+
+### Update
+
+* styled error message ([4383877ec70d00279667663de877646c4a8956e1](https://github.com/advanced-rest-client/response-status-view/commit/4383877ec70d00279667663de877646c4a8956e1))
+
+
+
+<a name="0.1.5"></a>
+## [0.1.5](https://github.com/advanced-rest-client/response-status-view/compare/0.1.4...v0.1.5) (2017-01-12)
+
+
+
+
 <a name="0.1.4"></a>
 ## [0.1.4](https://github.com/advanced-rest-client/response-status-view/compare/0.1.3...v0.1.4) (2017-01-11)
 

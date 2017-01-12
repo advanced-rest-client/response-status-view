@@ -88,6 +88,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       @apply(--main-section-block);
     }
 
+    .basic-options {
+      margin: 12px 0;
+    }
+
+    .basic-options paper-checkbox {
+      margin-right: 12px;
+    }
   </style>
 </head>
 <body unresolved>
@@ -96,7 +103,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <h3>Display data form</h3>
       <section class="response-data-form">
         <p class="info">Set up the request / response data.</p>
-        <paper-checkbox checked="{{isXhr}}">XHR type of request</paper-checkbox>
+        <div class="basic-options">
+          <paper-checkbox checked="{{isXhr}}">XHR type of request</paper-checkbox>
+          <paper-checkbox checked="{{isError}}">Error in the response</paper-checkbox>
+        </div>
         <paper-tabs selected="{{selectedTab}}">
           <paper-tab>Basic settings</paper-tab>
           <paper-tab hidden$="[[isXhr]]">Response timings</paper-tab>
@@ -176,7 +186,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           redirects="[[redirects]]"
           redirect-timings="[[redirectTimings]]"
           timings="[[timings]]"
-          is-xhr="[[isXhr]]"></response-status-view>
+          is-xhr="[[isXhr]]"
+          response-error="[[responseError]]"></response-status-view>
       </section>
     </div>
     <arc-definitions></arc-definitions>
@@ -201,6 +212,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       receive: 112.412
     };
     app.isXhr = false;
+    app.isError = false;
+    app.responseError = undefined;
+    app.observers = [
+      '_isErrorChanged(isError)'
+    ];
+
+    app._isErrorChanged = function(isError) {
+      if (isError) {
+        app.responseError = new Error('Error in the response.');
+      } else {
+        app.responseError = undefined;
+      }
+    };
 
     app._computeHttpMessage = function(headers) {
       if (!headers) {
