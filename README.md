@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/advanced-rest-client/response-status-view.svg?branch=master)](https://travis-ci.org/advanced-rest-client/response-status-view)  
+[![Build Status](https://travis-ci.org/advanced-rest-client/response-status-view.svg?branch=stage)](https://travis-ci.org/advanced-rest-client/response-status-view)  
 
 # response-status-view
 
@@ -38,6 +38,11 @@ A JavaScript Error object.
 ### `timings`
 Object that represent a HAR 1.2 timings object. See the `request-timings` element documentation for more information.
 
+## Status message
+The element will set a status message if, after 100 ms of setting the status code
+property, the `statusMessage` property is not set. This is to ensure that the
+user will always see any status message.
+
 ## Styling
 `<response-status-view>` provides the following custom properties and mixins for styling:
 
@@ -59,3 +64,24 @@ Custom property | Description | Default
 `--response-status-view-status-info-border-color` | Border color separating status from the response headers | `#e5e5e5`
 `--response-status-view-status-container` | Mixin applied to the status row in the main view and in the redirects view (in advanced mode). | `{}`
 
+# status-message
+
+Use the `<status-message>` element to generate status message for corresponding
+status code.
+
+## Usage
+Create an element and set the `code` property. The `message` property will be
+set synchronously with the corresponding HTTP status message (in spec defined
+as a reason message).
+If the status code is non standard status code then the message property
+will be `undefined`.
+
+### Example:
+```
+var element = document.createElement('status-message');
+element.code = 201;
+console.log(element.message);
+```
+Note that the `code` can be string and it will be converted into the numeric
+value.
+ 

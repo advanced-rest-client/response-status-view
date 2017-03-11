@@ -23,6 +23,8 @@ the License.
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../arc-icons/arc-icons.html">
 <link rel="import" href="http-source-message-view.html">
+<link rel="import" href="status-message.html">
+
 <!--
 `<response-status-view>` HTTP response status view, including status, headers redirects and timings
 
@@ -59,6 +61,11 @@ Array of objects. Each object represent a HAR 1.2 timings object. See the `reque
 A JavaScript Error object.
 ### `timings`
 Object that represent a HAR 1.2 timings object. See the `request-timings` element documentation for more information.
+
+## Status message
+The element will set a status message if, after 100 ms of setting the status code
+property, the `statusMessage` property is not set. This is to ensure that the
+user will always see any status message.
 
 ## Styling
 `<response-status-view>` provides the following custom properties and mixins for styling:
@@ -453,6 +460,7 @@ Custom property | Description | Default
       if (!this.statusCode) {
         this.statusCode = 0;
       }
+      this.assignStatusMessage();
     },
 
     /** Compute index to 1-based index. */
@@ -551,6 +559,22 @@ Custom property | Description | Default
         clazz += ' opened';
       }
       return clazz;
+    },
+    /**
+     * This async function is executed after some thime of setting the status
+     * code. If after set period of time the `statusMessage` is still not set
+     * the it will use the `<status-message>` element to generate default
+     * status text message as defined in the spec.
+     */
+    assignStatusMessage: function() {
+      this.async(function() {
+        if (this.statusMessage) {
+          return;
+        }
+        var element = document.createElement('status-message');
+        element.code = this.statusCode;
+        this.statusMessage = element.message;
+      }, 100);
     }
   });
   </script>
