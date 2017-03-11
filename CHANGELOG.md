@@ -1,3 +1,17 @@
+<a name="0.1.8"></a>
+## [0.1.8](https://github.com/advanced-rest-client/response-status-view/compare/0.1.7...v0.1.8) (2017-03-11)
+
+
+### Docs
+
+* Updated documentation for the element ([4824e4467952aeb729366a9877803ba775641fd4](https://github.com/advanced-rest-client/response-status-view/commit/4824e4467952aeb729366a9877803ba775641fd4))
+
+### Update
+
+* Added automated status message generation if the response doesn't contain a http status message. ([1352916cfcea82ddfc5ea502494a8d73ebf76743](https://github.com/advanced-rest-client/response-status-view/commit/1352916cfcea82ddfc5ea502494a8d73ebf76743))
+
+
+
 <a name="0.1.7"></a>
 ## [0.1.7](https://github.com/advanced-rest-client/response-status-view/compare/0.1.6...v0.1.7) (2017-01-12)
 
