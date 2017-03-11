@@ -23,6 +23,8 @@ the License.
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../arc-icons/arc-icons.html">
 <link rel="import" href="http-source-message-view.html">
+<link rel="import" href="status-message.html">
+
 <!--
 `<response-status-view>` HTTP response status view, including status, headers redirects and timings
 
@@ -453,6 +455,7 @@ Custom property | Description | Default
       if (!this.statusCode) {
         this.statusCode = 0;
       }
+      this.assignStatusMessage();
     },
 
     /** Compute index to 1-based index. */
@@ -551,6 +554,17 @@ Custom property | Description | Default
         clazz += ' opened';
       }
       return clazz;
+    },
+
+    assignStatusMessage: function() {
+      this.async(function() {
+        if (this.statusMessage) {
+          return;
+        }
+        var element = document.createElement('status-message');
+        element.code = this.statusCode;
+        this.statusMessage = element.message;
+      }, 100);
     }
   });
   </script>
