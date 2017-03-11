@@ -62,6 +62,11 @@ A JavaScript Error object.
 ### `timings`
 Object that represent a HAR 1.2 timings object. See the `request-timings` element documentation for more information.
 
+## Status message
+The element will set a status message if, after 100 ms of setting the status code
+property, the `statusMessage` property is not set. This is to ensure that the
+user will always see any status message.
+
 ## Styling
 `<response-status-view>` provides the following custom properties and mixins for styling:
 
@@ -555,7 +560,12 @@ Custom property | Description | Default
       }
       return clazz;
     },
-
+    /**
+     * This async function is executed after some thime of setting the status
+     * code. If after set period of time the `statusMessage` is still not set
+     * the it will use the `<status-message>` element to generate default
+     * status text message as defined in the spec.
+     */
     assignStatusMessage: function() {
       this.async(function() {
         if (this.statusMessage) {

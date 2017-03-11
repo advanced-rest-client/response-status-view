@@ -12,7 +12,8 @@
   ],
   "private": true,
   "main": [
-    "response-status-view.html"
+    "response-status-view.html",
+    "status-message.html"
   ],
   "repository": {
     "type": "git",
