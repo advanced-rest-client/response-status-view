@@ -241,6 +241,33 @@ Custom property | Description | Default
       margin-left: 12px;
       color: var(--arc-status-code-color-500, rgba(211, 47, 47, 1));
     }
+
+    .status-url {
+      @apply(--arc-font-body1);
+      @apply(--layout-horizontal);
+      @apply(--layout-center);
+      padding-top: 12px;
+      padding-bottom: 12px;
+      font-size: 120%;
+      padding-left: 16px;
+      background: var(--response-status-view-request-url-background-color, #6B6C6D); /*--anypoint-steel1*/
+      color: var(--response-status-view-request-url-color, #fff);
+      @apply(--arc-font-code);
+      @apply(--response-status-view-request-url-info);
+    }
+
+    .http-method {
+      margin-right: 12px;
+    }
+
+    .request-url {
+      word-break: break-all;
+    }
+
+    .no-info {
+      padding-left: 16px;
+      @apply(--no-info-message);
+    }
     </style>
     <div class="status-row">
       <div class="status-value status">
@@ -264,60 +291,67 @@ Custom property | Description | Default
       </div>
     </div>
     <iron-collapse opened="[[opened]]">
-      <template is="dom-if" if="[[!isXhr]]">
-        <paper-tabs selected="{{selectedTab}}">
-          <paper-tab>
-            <span>Response headers</span>
-            <span class$="[[_computeBageClass(responseHeaders)]]">[[_computeHeadersLength(responseHeaders)]]</span>
-          </paper-tab>
-          <paper-tab>
-            <span>Request headers</span>
-            <span class$="[[_computeBageClass(requestHeaders)]]">[[_computeHeadersLength(requestHeaders)]]</span>
-          </paper-tab>
+
+      <template is="dom-if" if="[[requestUrl]]">
+        <div class="status-url">
+          <span class="http-method" hidden$="[[!requestMethod]]">[[requestMethod]]</span>
+          <span class="request-url">[[requestUrl]]</span>
+        </div>
+      </template>
+
+      <paper-tabs selected="{{selectedTab}}">
+        <paper-tab>
+          <span>Response headers</span>
+          <span class$="[[_computeBageClass(responseHeaders)]]">[[_computeHeadersLength(responseHeaders)]]</span>
+        </paper-tab>
+        <paper-tab>
+          <span>Request headers</span>
+          <span class$="[[_computeBageClass(requestHeaders)]]">[[_computeHeadersLength(requestHeaders)]]</span>
+        </paper-tab>
+        <template is="dom-if" if="[[!isXhr]]">
           <paper-tab>
             <span>Redirects</span>
             <span class$="[[_computeBageClass(redirects.length)]]">[[redirects.length]]</span>
           </paper-tab>
           <paper-tab>Timings</paper-tab>
-        </paper-tabs>
-        <iron-pages selected="[[selectedTab]]">
-          <headers-list-view on-tap="_handleLink" headers="[[responseHeaders]]"></headers-list-view>
-          <section class="request-header-panel">
+        </template>
+      </paper-tabs>
+      <iron-pages selected="[[selectedTab]]">
+        <headers-list-view on-tap="_handleLink" headers="[[responseHeaders]]"></headers-list-view>
+        <section class="request-header-panel">
+          <template is="dom-if" if="[[hasRequestHeaders]]">
             <headers-list-view type="request" on-tap="_handleLink" headers="[[requestHeaders]]"></headers-list-view>
             <http-source-message-view hidden$="[[!hasHttpMessage]]" message="[[httpMessage]]"></http-source-message-view>
-          </section>
-          <section class="redirects-panel">
-            <template is="dom-if" if="[[!redirects.length]]">
-              <div class="no-redirects-container">
-                <p class="no-redirects-info">There were no redirects during this request</p>
+          </template>
+          <template is="dom-if" if="[[!hasRequestHeaders]]">
+            <p class="no-info">Nothing to display here</p>
+          </template>
+        </section>
+        <section class="redirects-panel">
+          <template is="dom-if" if="[[!redirects.length]]">
+            <div class="no-redirects-container">
+              <p class="no-redirects-info">There were no redirects during this request</p>
+            </div>
+          </template>
+          <template is="dom-repeat" items="[[redirects]]">
+            <div class="status-row">
+              <div class="status-label text">
+                #<span>[[_computeIndexName(index)]]</span>
               </div>
-            </template>
-            <template is="dom-repeat" items="[[redirects]]">
-              <div class="status-row">
-                <div class="status-label text">
-                  #<span>[[_computeIndexName(index)]]</span>
+              <div class="redirect-value" on-tap="_handleLink">
+                <div class="status-value status text">
+                  <span class$="[[_computeStatusClass(item.status)]]">[[item.status]] [[item.statusText]]</span>
+                  <span class="redirect-location">to: <a href="[[_computeRedirectLocation(item.headers)]]" class="auto-link">[[_computeRedirectLocation(item.headers)]]</a></span>
                 </div>
-                <div class="redirect-value" on-tap="_handleLink">
-                  <div class="status-value status text">
-                    <span class$="[[_computeStatusClass(item.status)]]">[[item.status]] [[item.statusText]]</span>
-                    <span class="redirect-location">to: <a href="[[_computeRedirectLocation(item.headers)]]" class="auto-link">[[_computeRedirectLocation(item.headers)]]</a></span>
-                  </div>
-                  <headers-list-view headers="[[item.headers]]"></headers-list-view>
-                </div>
+                <headers-list-view headers="[[item.headers]]"></headers-list-view>
               </div>
-            </template>
-          </section>
-          <section class="timings-panel">
-            <request-timings-panel redirects="[[redirectTimings]]" timings="[[timings]]"></request-timings-panel>
-          </section>
-        </iron-pages>
-      </template>
-      <template is="dom-if" if="[[isXhr]]">
-        <template is="dom-if" if="[[hasResponseHeaders]]">
-          <h3 class="xhr-title">Response headers <span class$="[[_computeBageClass(responseHeaders)]]">[[_computeHeadersLength(responseHeaders)]]</span></h3>
-          <headers-list-view on-tap="_handleLink" headers="[[responseHeaders]]"></headers-list-view>
-        </template>
-      </template>
+            </div>
+          </template>
+        </section>
+        <section class="timings-panel">
+          <request-timings-panel redirects="[[redirectTimings]]" timings="[[timings]]"></request-timings-panel>
+        </section>
+      </iron-pages>
     </iron-collapse>
   </template>
   <script>
@@ -338,11 +372,16 @@ Custom property | Description | Default
       },
       // The response headers as a HTTP headers string
       responseHeaders: {
-        type: String,
-        observer: '_computeHasResponseHeaders'
+        type: String
       },
       // The request headers as a HTTP headers string
       requestHeaders: String,
+      // Computed value, true when request headers are set.
+      hasRequestHeaders: {
+        type: String,
+        value: false,
+        computed: '_computeHasRequestHeaders(requestHeaders)'
+      },
       /**
        * Raw HTTP message sent to the server.
        * It will be displayed in the request headers tab.
@@ -377,8 +416,7 @@ Custom property | Description | Default
        */
       redirects: {
         type: Array,
-        value: [],
-        observer: '_redirectsChanged'
+        value: []
       },
       /**
        * List of timings occured during the redirects.
@@ -407,18 +445,6 @@ Custom property | Description | Default
         type: Object,
         notify: true
       },
-      // True if there are redirects data available.
-      hasRedirects: {
-        type: Boolean,
-        value: false,
-        readOnly: true
-      },
-      // True if there was a response headers. False when error.
-      hasResponseHeaders: {
-        type: Boolean,
-        value: false,
-        readOnly: true
-      },
       /**
        * If true it means that the request has been made by the basic
        * transport and advanced details of the request/response like
@@ -427,13 +453,17 @@ Custom property | Description | Default
        */
       isXhr: {
         type: Boolean,
-        value: false
+        observer: '_isXhrChanged'
       },
       // True if the collapsable element is opened
       opened: {
         type: Boolean,
         value: false
-      }
+      },
+      // A request URL that has been used to make a request
+      requestUrl: String,
+      // A HTTP method used to make a request
+      requestMethod: String
     },
 
     attached: function() {
@@ -494,18 +524,9 @@ Custom property | Description | Default
       }
       return match[1];
     },
-    // Handler for the `redirects` change. Sets the `hasRedirects` property.
-    _redirectsChanged: function(redirects) {
-      var has = !!(redirects && redirects.length);
-      this._setHasRedirects(has);
-    },
     // Computes if this is a response error and sets isError flag.
     _computeError: function(re) {
       this._setIsError(!!re);
-    },
-    // Computes if the response has response headers.
-    _computeHasResponseHeaders: function(headers) {
-      this._setHasResponseHeaders(!!headers);
     },
     /**
      * Computes CSS class for the badge in the tabs.
@@ -575,6 +596,25 @@ Custom property | Description | Default
         element.code = this.statusCode;
         this.statusMessage = element.message;
       }, 100);
+    },
+    // Resets current tab when isXhr is true.
+    _isXhrChanged: function(value) {
+      if (value === undefined) {
+        return;
+      }
+      if (value && this.selectedTab > 1) {
+        this.selectedTab = 0;
+      }
+      var tabs = this.$$('paper-tabs');
+      if (!tabs) {
+        console.warn('Tabs panel not found in DOM');
+        return;
+      }
+      tabs.notifyResize();
+    },
+    // Computes if request headers has been set.
+    _computeHasRequestHeaders: function(requestHeaders) {
+      return !!requestHeaders;
     }
   });
   </script>

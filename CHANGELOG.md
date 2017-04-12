@@ -1,3 +1,23 @@
+<a name="0.1.10"></a>
+## [0.1.10](https://github.com/advanced-rest-client/response-status-view/compare/0.1.8...v0.1.10) (2017-04-12)
+
+
+### Fix
+
+* Removed unused observer ([488a7bed047b7345696f98c71966cb352f60820e](https://github.com/advanced-rest-client/response-status-view/commit/488a7bed047b7345696f98c71966cb352f60820e))
+
+### Update
+
+* removed unused code. Added request URL + http method to the status details.Changed isXhr behavior - now it will always rended tabs to display response headers ([60d5d8dd279bcda56eaba29023560c8b96551aef](https://github.com/advanced-rest-client/response-status-view/commit/60d5d8dd279bcda56eaba29023560c8b96551aef))
+
+
+
+<a name="0.1.9"></a>
+## [0.1.9](https://github.com/advanced-rest-client/response-status-view/compare/0.1.8...v0.1.9) (2017-04-12)
+
+
+
+
 <a name="0.1.8"></a>
 ## [0.1.8](https://github.com/advanced-rest-client/response-status-view/compare/0.1.7...v0.1.8) (2017-03-11)
 

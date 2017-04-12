@@ -1,6 +1,6 @@
 {
   "name": "response-status-view",
-  "version": "0.1.8",
+  "version": "0.1.10",
   "license": "Apache-2.0 OR CC-BY-4.0",
   "description": "HTTP response status view, including status, headers redirects and timings",
   "devDependencies": {
@@ -16,7 +16,7 @@
   "author": "The Advanced REST client authors <arc@mulesoft.com>",
   "scripts": {
     "serve": "node_modules/.bin/polymer serve",
-    "lint": "node_modules/.bin/polymer lint response-status-view.html",
+    "lint": "node_modules/.bin/polymer lint response-status-view.html http-source-message-view.html status-message.html",
     "test-sauce": "exit 0; node_modules/.bin/polymer test --plugin sauce --job-name \"response-status-view:local-test\"",
     "test": "exit 0; node_modules/.bin/polymer test",
     "deps": "npm install --quiet && bower install --quiet",
