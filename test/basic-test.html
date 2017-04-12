@@ -30,14 +30,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </test-fixture>
 
     <script>
-    /* global suite, test, fixture, assert */
+    /* global fixture, assert */
     suite('basic', function() {
       var element;
+
       setup(function() {
         element = fixture('basic');
       });
-      test('`response-status-view` should be initialized', function() {
-        assert.equal(element.isAttached, true, 'element.isAttached equals true');
+
+      test('hasRequestHeaders should be false', function() {
+        assert.isFalse(element.hasRequestHeaders);
+      });
+
+      test('opened should be false', function() {
+        assert.isFalse(element.opened);
+      });
+
+      test('statusCode should be undefined', function() {
+        assert.isUndefined(element.statusCode);
       });
     });
     </script>

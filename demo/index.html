@@ -40,6 +40,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         margin-bottom: 40px;
         @apply(--shadow-elevation-4dp);
       }
+      --arc-font-code: {
+        font-family: monospace;
+      }
     }
 
     body {
@@ -103,10 +106,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <h3>Display data form</h3>
       <section class="response-data-form">
         <p class="info">Set up the request / response data.</p>
+
         <div class="basic-options">
           <paper-checkbox checked="{{isXhr}}">XHR type of request</paper-checkbox>
           <paper-checkbox checked="{{isError}}">Error in the response</paper-checkbox>
         </div>
+
+        <div class="basic-options">
+          <p class="info">Request info</p>
+          <paper-input type="text" value="{{requestMethod}}" label="HTTP method" required auto-validate></paper-input>
+          <paper-input type="text" value="{{requestUrl}}" label="Request URL" required auto-validate></paper-input>
+        </div>
+
         <paper-tabs selected="{{selectedTab}}">
           <paper-tab>Basic settings</paper-tab>
           <paper-tab hidden$="[[isXhr]]">Response timings</paper-tab>
@@ -177,6 +188,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <h3>The `response-status-view`</h3>
       <section class="response-status-section">
         <response-status-view
+          opened
           status-code="[[statusCode]]"
           status-message="[[statusMessage]]"
           request-headers="[[requestHeaders]]"
@@ -187,7 +199,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           redirect-timings="[[redirectTimings]]"
           timings="[[timings]]"
           is-xhr="[[isXhr]]"
-          response-error="[[responseError]]"></response-status-view>
+          response-error="[[responseError]]"
+          request-method="[[requestMethod]]"
+          request-url="[[requestUrl]]"></response-status-view>
       </section>
     </div>
     <arc-definitions></arc-definitions>
@@ -205,6 +219,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     app.responseHeaders = initHeaders;
     app.redirects = [];
     app.redirectTimings = [];
+    app.requestUrl = 'https://anypoint.mulesoft.com/';
+    app.requestMethod = 'GET';
     app.timings = {
       connect: 12.1345,
       send: 2.12,
