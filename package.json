@@ -16,7 +16,7 @@
   "author": "The Advanced REST client authors <arc@mulesoft.com>",
   "scripts": {
     "serve": "node_modules/.bin/polymer serve",
-    "lint": "node_modules/.bin/polymer lint response-status-view.html",
+    "lint": "node_modules/.bin/polymer lint response-status-view.html http-source-message-view.html status-message.html",
     "test-sauce": "exit 0; node_modules/.bin/polymer test --plugin sauce --job-name \"response-status-view:local-test\"",
     "test": "exit 0; node_modules/.bin/polymer test",
     "deps": "npm install --quiet && bower install --quiet",
