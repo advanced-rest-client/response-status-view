@@ -515,14 +515,19 @@ Custom property | Description | Default
      * found.
      */
     _computeRedirectLocation: function(headers) {
+      var def = 'unknown';
       if (!headers) {
-        return 'unknown';
+        return def;
       }
-      var match = headers.match(/^location: (.*)$/im);
-      if (!match) {
-        return 'unknown';
+      if (typeof headers === 'string') {
+        var match = headers.match(/^location: (.*)$/im);
+        if (!match) {
+          return def;
+        }
+        return match[1];
       }
-      return match[1];
+      var location = headers.get('location');
+      return location || def;
     },
     // Computes if this is a response error and sets isError flag.
     _computeError: function(re) {
