@@ -1,3 +1,13 @@
+<a name="0.1.12"></a>
+## [0.1.12](https://github.com/advanced-rest-client/response-status-view/compare/0.1.11...0.1.12) (2017-09-01)
+
+
+### New
+
+* Added support for the headers as a `Headers` object ([2a5857d99713c72495cad8fbd3956ab16b8ed2e7](https://github.com/advanced-rest-client/response-status-view/commit/2a5857d99713c72495cad8fbd3956ab16b8ed2e7))
+
+
+
 <a name="0.1.11"></a>
 ## [0.1.11](https://github.com/advanced-rest-client/response-status-view/compare/0.1.10...v0.1.11) (2017-04-12)
 
