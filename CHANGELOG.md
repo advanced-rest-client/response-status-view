@@ -1,3 +1,13 @@
+<a name="0.1.15"></a>
+## [0.1.15](https://github.com/advanced-rest-client/response-status-view/compare/0.1.14...0.1.15) (2017-09-27)
+
+
+### Fix
+
+* Fixing status line layout when narrow view ([c8628abd1a1fd1f935967a7bdfcbe5157f9a3130](https://github.com/advanced-rest-client/response-status-view/commit/c8628abd1a1fd1f935967a7bdfcbe5157f9a3130))
+
+
+
 <a name="0.1.14"></a>
 ## [0.1.14](https://github.com/advanced-rest-client/response-status-view/compare/0.1.12...0.1.14) (2017-09-21)
 
