@@ -132,10 +132,6 @@ Custom property | Description | Default
       display: block;
     }
 
-    .status-value.status {
-      padding: 0 16px;
-    }
-
     .redirect-value {
       margin-top: 12px;
       @apply(--layout-flex);
@@ -147,7 +143,7 @@ Custom property | Description | Default
     }
 
     .no-redirects-info {
-      @apply(--no-info-message);
+      @apply --no-info-message;
     }
 
     headers-list-view {
@@ -184,6 +180,7 @@ Custom property | Description | Default
       padding: 4px 8px;
       color: #fff;
       border-radius: 2px;
+      display: block;
       background-color: var(--arc-status-code-color-200, rgba(56, 142, 60, 1));
     }
 
@@ -202,11 +199,14 @@ Custom property | Description | Default
     .response-time {
       color: var(--response-status-view-loading-time-color, rgba(0, 0, 0, 0.54));
       margin-left: 8px;
+      display: block;
       @apply(--response-status-view-time);
     }
 
     .status-info {
-      @apply(--layout-flex);
+      @apply --layout-horizontal;
+      @apply --layout-center;
+      @apply --layout-flex;
     }
 
     .toggle-button {
