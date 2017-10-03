@@ -322,10 +322,12 @@ Custom property | Description | Default
         <section class="request-header-panel">
           <template is="dom-if" if="[[hasRequestHeaders]]">
             <headers-list-view type="request" on-tap="_handleLink" headers="[[requestHeaders]]"></headers-list-view>
-            <http-source-message-view hidden$="[[!hasHttpMessage]]" message="[[httpMessage]]"></http-source-message-view>
           </template>
           <template is="dom-if" if="[[!hasRequestHeaders]]">
             <p class="no-info">Nothing to display here</p>
+          </template>
+          <template is="dom-if" if="[[hasHttpMessage]]">
+            <http-source-message-view message="[[httpMessage]]"></http-source-message-view>
           </template>
         </section>
         <section class="redirects-panel">
