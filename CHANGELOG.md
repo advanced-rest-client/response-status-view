@@ -1,3 +1,13 @@
+<a name="0.1.17"></a>
+## [0.1.17](https://github.com/advanced-rest-client/response-status-view/compare/0.1.16...0.1.17) (2017-10-03)
+
+
+### Update
+
+* Moved source message display outside headers display template ([ea375b4c205b704406476a39004111bc1d699020](https://github.com/advanced-rest-client/response-status-view/commit/ea375b4c205b704406476a39004111bc1d699020))
+
+
+
 <a name="0.1.16"></a>
 ## [0.1.16](https://github.com/advanced-rest-client/response-status-view/compare/0.1.15...0.1.16) (2017-09-27)
 
