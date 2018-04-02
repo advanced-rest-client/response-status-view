@@ -1,6 +1,6 @@
 <!--
 @license
-Copyright 2016 The Advanced REST client authors <arc@mulesoft.com>
+Copyright 2018 The Advanced REST client authors <arc@mulesoft.com>
 Licensed under the Apache License, Version 2.0 (the "License"); you may not
 use this file except in compliance with the License. You may obtain a copy of
 the License at
@@ -11,7 +11,9 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 -->
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../polymer/lib/elements/dom-if.html">
+<link rel="import" href="../polymer/lib/elements/dom-repeat.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../paper-tabs/paper-tabs.html">
 <link rel="import" href="../paper-tabs/paper-tab.html">
@@ -23,88 +25,20 @@ the License.
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../arc-icons/arc-icons.html">
 <link rel="import" href="http-source-message-view.html">
-<link rel="import" href="status-message.html">
-
-<!--
-`<response-status-view>` HTTP response status view, including status, headers redirects and timings
-
-### Full example
-```
-<response-status-view
-  status-code="[[statusCode]]"
-  status-message="[[statusMessage]]"
-  request-headers="[[requestHeaders]]"
-  response-headers="[[responseHeaders]]"
-  loading-time="[[loadingTime]]"
-  http-message="[[_computeHttpMessage(requestHeaders)]]"
-  redirects="[[redirects]]"
-  redirect-timings="[[redirectTimings]]"
-  timings="[[timings]]"></response-status-view>
-```
-### Minimal example
-```
-<response-status-view
-  status-code="[[statusCode]]"
-  status-message="[[statusMessage]]"
-  response-headers="[[responseHeaders]]"
-  loading-time="[[loadingTime]]"></response-status-view>
-```
-
-## Data Structure
-
-### Redirects
-#### `redirects`
-Array of objects. Each objects need to have the `headers` property as a HTTP headers string, `status` as a HTTP status and optionally `statusText`.
-#### `redirectTimings`
-Array of objects. Each object represent a HAR 1.2 timings object. See the `request-timings` element documentation for more information.
-### `responseError`
-A JavaScript Error object.
-### `timings`
-Object that represent a HAR 1.2 timings object. See the `request-timings` element documentation for more information.
-
-## Status message
-The element will set a status message if, after 100 ms of setting the status code
-property, the `statusMessage` property is not set. This is to ensure that the
-user will always see any status message.
-
-## Styling
-`<response-status-view>` provides the following custom properties and mixins for styling:
-
-Custom property | Description | Default
-----------------|-------------|----------
-`--response-status-view` | Mixin applied to the element | `{}`
-`--raml-docs-response-panel` | Mixin applied to the element | `{}`
-`--arc-status-code-color-200` | Color of the 200 status code (ARC theme option) | `rgba(56, 142, 60, 1)` |
-`--arc-status-code-color-300` | Color of the 300 status code (ARC theme option) | `rgba(48, 63, 159, 1)` |
-`--arc-status-code-color-400` | Color of the 400 status code (ARC theme option) | `rgba(245, 124, 0, 1)` |
-`--arc-status-code-color-500` | Color of the 500 status code (ARC theme option) | `rgba(211, 47, 47, 1)` |
-`--arc-font-subhead` | Mixin applied to sub headers (low implortance headers). It's a theme mixin. | `{}`
-`--no-info-message` | Mixin applied to the messages information that there's no information available. | `{}`
-`--arc-font-code1` | Mixin applied to the source message. It's a theme mixin. | `{}`
-`--response-status-view-badge-color` | Color of the badge with number of the headers / redirections in advanced view | `#fff`
-`--response-status-view-badge-background` | Background color of the badge with number of the headers / redirections in advanced view | `--accent-color`
-`--response-status-view-empty-badge-color` | Color of the badge with number of the headers / redirections in advanced view | `#fff`
-`--response-status-view-empty-badge-background` | Background color of the badge with number of the headers / redirections in advanced view | `#9e9e9e`
-`--response-status-view-status-info-border-color` | Border color separating status from the response headers | `#e5e5e5`
-`--response-status-view-status-container` | Mixin applied to the status row in the main view and in the redirects view (in advanced mode). | `{}`
-
-@group UI Elements
-@element response-status-view
-@demo demo/index.html
--->
+<script src="status-message.js"></script>
 <dom-module id="response-status-view">
   <template>
     <style>
     :host {
-      @apply(--layout-vertical);
-      @apply(--response-status-view);
+      @apply --layout-vertical;
+      @apply --response-status-view;
     }
 
     .status-row,
     .timings-row {
-      @apply(--layout-horizontal);
-      @apply(--arc-font-subhead);
-      @apply(--layout-center);
+      @apply --layout-horizontal;
+      @apply --arc-font-subhead;
+      @apply --layout-center;
       min-height: 56px;
     }
 
@@ -118,14 +52,14 @@ Custom property | Description | Default
 
     .status-label {
       width: 40px;
-      @apply(--arc-font-subhead);
+      @apply --arc-font-subhead;
     }
 
     .status-value {
-      @apply(--layout-flex);
-      @apply(--layout-horizontal);
-      @apply(--layout-center);
-      @apply(--response-status-view-status-container);
+      @apply --layout-flex;
+      @apply --layout-horizontal;
+      @apply --layout-center;
+      @apply --response-status-view-status-container;
     }
 
     .status-value > span {
@@ -134,12 +68,12 @@ Custom property | Description | Default
 
     .redirect-value {
       margin-top: 12px;
-      @apply(--layout-flex);
+      @apply --layout-flex;
     }
 
     .no-redirects-container {
-      @apply(--layout-vertical);
-      @apply(--layout-center);
+      @apply --layout-vertical;
+      @apply --layout-center;
     }
 
     .no-redirects-info {
@@ -151,20 +85,20 @@ Custom property | Description | Default
     }
 
     .text {
-      @apply(--select-text);
+      @apply --select-text;
     }
 
     .badge {
       display: block;
-      background-color: var(--response-status-view-badge-background, --accent-color);
+      background-color: var(--response-status-view-badge-background, var(--accent-color));
       color: var(--response-status-view-badge-color, #fff);
       width: 20px;
       height: 20px;
       border-radius: 50%;
       font-size: 12px;
       margin-left: 12px;
-      @apply(--layout-horizontal);
-      @apply(--layout-center-center);
+      @apply --layout-horizontal;
+      @apply --layout-center-center;
     }
 
     .badge.empty {
@@ -200,7 +134,7 @@ Custom property | Description | Default
       color: var(--response-status-view-loading-time-color, rgba(0, 0, 0, 0.54));
       margin-left: 8px;
       display: block;
-      @apply(--response-status-view-time);
+      @apply --response-status-view-time;
     }
 
     .status-info {
@@ -228,10 +162,10 @@ Custom property | Description | Default
     }
 
     .xhr-title {
-      @apply(--layout-horizontal);
-      @apply(--layout-center);
+      @apply --layout-horizontal;
+      @apply --layout-center;
       padding: 0px 16px;
-      @apply(--arc-font-subhead);
+      @apply --arc-font-subhead;
     }
 
     .redirect-location {
@@ -244,17 +178,17 @@ Custom property | Description | Default
     }
 
     .status-url {
-      @apply(--arc-font-body1);
-      @apply(--layout-horizontal);
-      @apply(--layout-center);
+      @apply --arc-font-body1;
+      @apply --layout-horizontal;
+      @apply --layout-center;
       padding-top: 12px;
       padding-bottom: 12px;
       font-size: 120%;
       padding-left: 16px;
-      background: var(--response-status-view-request-url-background-color, #6B6C6D); /*--anypoint-steel1*/
+      background: var(--response-status-view-request-url-background-color, #6B6C6D);
       color: var(--response-status-view-request-url-color, #fff);
-      @apply(--arc-font-code);
-      @apply(--response-status-view-request-url-info);
+      @apply --arc-font-code;
+      @apply --response-status-view-request-url-info;
     }
 
     .http-method {
@@ -267,7 +201,7 @@ Custom property | Description | Default
 
     .no-info {
       padding-left: 16px;
-      @apply(--no-info-message);
+      @apply --no-info-message;
     }
     </style>
     <div class="status-row">
@@ -292,14 +226,12 @@ Custom property | Description | Default
       </div>
     </div>
     <iron-collapse opened="[[opened]]">
-
       <template is="dom-if" if="[[requestUrl]]">
         <div class="status-url">
           <span class="http-method" hidden$="[[!requestMethod]]">[[requestMethod]]</span>
           <span class="request-url">[[requestUrl]]</span>
         </div>
       </template>
-
       <paper-tabs selected="{{selectedTab}}">
         <paper-tab>
           <span>Response headers</span>
@@ -358,124 +290,216 @@ Custom property | Description | Default
     </iron-collapse>
   </template>
   <script>
-  Polymer({
-    is: 'response-status-view',
-    properties: {
-      // Response status code.
-      statusCode: {
-        type: Number,
-        observer: '_statusCodeChanged'
-      },
-      // Status message (if any)
-      statusMessage: String,
-      // The request/response loading time.
-      loadingTime: {
-        type: Number,
-        value: 0
-      },
-      // The response headers as a HTTP headers string
-      responseHeaders: {
-        type: String
-      },
-      // The request headers as a HTTP headers string
-      requestHeaders: String,
-      // Computed value, true when request headers are set.
-      hasRequestHeaders: {
-        type: String,
-        value: false,
-        computed: '_computeHasRequestHeaders(requestHeaders)'
-      },
-      /**
-       * Raw HTTP message sent to the server.
-       * It will be displayed in the request headers tab.
-       * Optional for transports that do not expose this information.
-       */
-      httpMessage: {
-        type: String,
-        observer: '_httpMessageChanged'
-      },
-      // Computed value, true when source HTTP message is not set.
-      hasHttpMessage: {
-        type: Boolean,
-        value: false,
-        readOnly: true
-      },
-      /**
-       * An Error object representing the response error.
-       */
-      responseError: {
-        type: Object,
-        observer: '_computeError'
-      },
-      // Calculated to be true if responseError object is set.
-      isError: {
-        type: Boolean,
-        value: false,
-        readOnly: true
-      },
-      /**
-       * An array of redirect responses.
-       * Each of the response objects should be regular Response objects.
-       */
-      redirects: {
-        type: Array,
-        value: []
-      },
-      /**
-       * List of timings occured during the redirects.
-       * This list should be ordered by the time of redirection.
-       * See the `request-timings` element documentation for more
-       * information.
-       */
-      redirectTimings: {
-        type: Array,
-        value: function() {
-          return [];
-        }
-      },
-      // Currently selected tab.
-      selectedTab: {
-        type: Number,
-        value: 0
-      },
-      /**
-       * The timings object to display request/response timing information
-       * as defined in HAR 1.2 spec.
-       * See the `request-timings` element documentation for more
-       * information.
-       */
-      timings: {
-        type: Object,
-        notify: true
-      },
-      /**
-       * If true it means that the request has been made by the basic
-       * transport and advanced details of the request/response like
-       * redirects, timings, source message are not available.
-       * It this case it will hide unused tabs.
-       */
-      isXhr: {
-        type: Boolean,
-        observer: '_isXhrChanged'
-      },
-      // True if the collapsable element is opened
-      opened: {
-        type: Boolean,
-        value: false
-      },
-      // A request URL that has been used to make a request
-      requestUrl: String,
-      // A HTTP method used to make a request
-      requestMethod: String
-    },
+  /**
+   * HTTP response status view, including status, headers redirects and timings
+   *
+   * ### Full example
+   *
+   * ```html
+   * <response-status-view
+   *  status-code="[[statusCode]]"
+   *  status-message="[[statusMessage]]"
+   *  request-headers="[[requestHeaders]]"
+   *  response-headers="[[responseHeaders]]"
+   *  loading-time="[[loadingTime]]"
+   *  http-message="[[_computeHttpMessage(requestHeaders)]]"
+   *  redirects="[[redirects]]"
+   *  redirect-timings="[[redirectTimings]]"
+   *  timings="[[timings]]"></response-status-view>
+   * ```
+   *
+   * ### Minimal example
+   *
+   * ```html
+   * <response-status-view
+   *  status-code="[[statusCode]]"
+   *  status-message="[[statusMessage]]"
+   *  response-headers="[[responseHeaders]]"
+   *  loading-time="[[loadingTime]]"></response-status-view>
+   * ```
+   *
+   * ## Data model
+   *
+   * ### Redirects
+   *
+   * #### `redirects`
+   *
+   * Array of objects. Each object has `headers` property as a HTTP headers
+   * string, `status` as a HTTP status and optionally `statusText`.
+   *
+   * #### `redirectTimings`
+   *
+   * Array of objects. Each object represent a HAR 1.2 timings object.
+   * See the `request-timings` element documentation for more information.
+   *
+   * ### `responseError`
+   *
+   * A JavaScript Error object.
+   *
+   * ### `timings`
+   *
+   * Object that represent a HAR 1.2 timings object. See the `request-timings`
+   * element documentation for more information.
+   *
+   * ## Status message
+   *
+   * The element sets a status message if, after ~100 ms of setting status code
+   * property, the `statusMessage` property is not set. This is to ensure that
+   * the user will always see any status message.
+   *
+   * ## Styling
+   *
+   * `<response-status-view>` provides the following custom properties and mixins for styling:
+   *
+   * Custom property | Description | Default
+   * ----------------|-------------|----------
+   * `--response-status-view` | Mixin applied to the element | `{}`
+   * `--raml-docs-response-panel` | Mixin applied to the element | `{}`
+   * `--arc-status-code-color-200` | Color of the 200 status code (ARC theme option) | `rgba(56, 142, 60, 1)` |
+   * `--arc-status-code-color-300` | Color of the 300 status code (ARC theme option) | `rgba(48, 63, 159, 1)` |
+   * `--arc-status-code-color-400` | Color of the 400 status code (ARC theme option) | `rgba(245, 124, 0, 1)` |
+   * `--arc-status-code-color-500` | Color of the 500 status code (ARC theme option) | `rgba(211, 47, 47, 1)` |
+   * `--arc-font-subhead` | Mixin applied to sub headers (low implortance headers). It's a theme mixin. | `{}`
+   * `--no-info-message` | Mixin applied to the messages information that there's no information available. | `{}`
+   * `--arc-font-code1` | Mixin applied to the source message. It's a theme mixin. | `{}`
+   * `--response-status-view-badge-color` | Color of the badge with number of the headers / redirections in advanced view | `#fff`
+   * `--response-status-view-badge-background` | Background color of the badge with number of the headers / redirections in advanced view | `--accent-color`
+   * `--response-status-view-empty-badge-color` | Color of the badge with number of the headers / redirections in advanced view | `#fff`
+   * `--response-status-view-empty-badge-background` | Background color of the badge with number of the headers / redirections in advanced view | `#9e9e9e`
+   * `--response-status-view-status-info-border-color` | Border color separating status from the response headers | `#e5e5e5`
+   * `--response-status-view-status-container` | Mixin applied to the status row in the main view and in the redirects view (in advanced mode). | `{}`
+   *
+   * ## Changes in version 2.0
+   *
+   * - `status-message` element was removed. The `StatusMessage` class is included
+   * with this element.
+   *
+   * @customElement
+   * @polymer
+   * @demo demo/index.html
+   * @memberof ApiElements
+   */
+  class ResponseStatusView extends Polymer.Element {
+    static get is() { return 'response-status-view'; }
+    static get properties() {
+      return {
+        // Response status code.
+        statusCode: {
+          type: Number,
+          observer: '_statusCodeChanged'
+        },
+        // Status message (if any)
+        statusMessage: String,
+        // The request/response loading time.
+        loadingTime: {
+          type: Number,
+          value: 0
+        },
+        // The response headers as a HTTP headers string
+        responseHeaders: {
+          type: String
+        },
+        // The request headers as a HTTP headers string
+        requestHeaders: String,
+        // Computed value, true when request headers are set.
+        hasRequestHeaders: {
+          type: String,
+          value: false,
+          computed: '_computeHasRequestHeaders(requestHeaders)'
+        },
+        /**
+         * Raw HTTP message sent to the server.
+         * It will be displayed in the request headers tab.
+         * Optional for transports that do not expose this information.
+         */
+        httpMessage: {
+          type: String,
+        },
+        // Computed value, true when source HTTP message is not set.
+        hasHttpMessage: {
+          type: Boolean,
+          value: false,
+          readOnly: true,
+          computed: '_computeHasHttpMessage(httpMessage)'
+        },
+        /**
+         * An Error object representing the response error.
+         */
+        responseError: {
+          type: Object
+        },
+        // Calculated to be true if responseError object is set.
+        isError: {
+          type: Boolean,
+          value: false,
+          readOnly: true,
+          computed: '_computeIsError(responseError)'
+        },
+        /**
+         * An array of redirect responses.
+         * Each of the response objects should be regular Response objects.
+         */
+        redirects: {
+          type: Array,
+          value: []
+        },
+        /**
+         * List of timings occured during the redirects.
+         * This list should be ordered by the time of redirection.
+         * See the `request-timings` element documentation for more
+         * information.
+         */
+        redirectTimings: {
+          type: Array,
+          value: function() {
+            return [];
+          }
+        },
+        // Currently selected tab.
+        selectedTab: {
+          type: Number,
+          value: 0
+        },
+        /**
+         * The timings object to display request/response timing information
+         * as defined in HAR 1.2 spec.
+         * See the `request-timings` element documentation for more
+         * information.
+         */
+        timings: {
+          type: Object,
+          notify: true
+        },
+        /**
+         * If true it means that the request has been made by the basic
+         * transport and advanced details of the request/response like
+         * redirects, timings, source message are not available.
+         * It this case it will hide unused tabs.
+         */
+        isXhr: {
+          type: Boolean,
+          observer: '_isXhrChanged'
+        },
+        // True if the collapsable element is opened
+        opened: {
+          type: Boolean,
+          value: false
+        },
+        // A request URL that has been used to make a request
+        requestUrl: String,
+        // A HTTP method used to make a request
+        requestMethod: String
 
-    attached: function() {
+      };
+    }
+
+    attached() {
       if (this.statusCode) {
         this._statusCodeChanged();
       }
-    },
+    }
 
-    _computeStatusClass: function(code) {
+    _computeStatusClass(code) {
       var cls = 'status-code-value';
       if (code >= 500 || code === 0) {
         cls += ' error';
@@ -487,29 +511,35 @@ Custom property | Description | Default
         cls += ' info';
       }
       return cls;
-    },
+    }
 
-    _statusCodeChanged: function() {
+    _statusCodeChanged() {
       if (!this.statusCode) {
         this.statusCode = 0;
       }
       this.assignStatusMessage();
-    },
+    }
 
     /** Compute index to 1-based index. */
-    _computeIndexName: function(index) {
+    _computeIndexName(index) {
       return index + 1;
-    },
+    }
     /** Catch headers link click and send proper event to the listeners. */
-    _handleLink: function(e) {
+    _handleLink(e) {
       e.preventDefault();
-      e = Polymer.dom(e);
-      if (e.rootTarget.nodeName === 'A') {
-        this.fire('action-link-change', {
-          url: e.rootTarget.href
+      const path = e.composedPath();
+      if (path[0].nodeName === 'A') {
+        const ev = new CustomEvent('action-link-change', {
+          detail: {
+            url: path[0].href
+          },
+          bubbles: true,
+          composed: true,
+          cancelable: true
         });
+        this.dispatchEvent(ev);
       }
-    },
+    }
     /**
      * Extracts a location URL form the headers.
      *
@@ -517,25 +547,29 @@ Custom property | Description | Default
      * @return {String} A value of the location header or `unknown` if not
      * found.
      */
-    _computeRedirectLocation: function(headers) {
-      var def = 'unknown';
+    _computeRedirectLocation(headers) {
+      let def = 'unknown';
       if (!headers) {
         return def;
       }
       if (typeof headers === 'string') {
-        var match = headers.match(/^location: (.*)$/im);
+        const match = headers.match(/^location: (.*)$/im);
         if (!match) {
           return def;
         }
         return match[1];
       }
-      var location = headers.get('location');
+      const location = headers.get('location');
       return location || def;
-    },
-    // Computes if this is a response error and sets isError flag.
-    _computeError: function(re) {
-      this._setIsError(!!re);
-    },
+    }
+    /**
+     * Computes value for `isError` property.
+     * @param {Object} responseError Response error object
+     * @return {Boolean}
+     */
+    _computeIsError(responseError) {
+      return !!responseError;
+    }
     /**
      * Computes CSS class for the badge in the tabs.
      * If passed `input` is string it only check if string is not empty.
@@ -544,12 +578,12 @@ Custom property | Description | Default
      * @param {String|Number} input String or number to check.
      * @return {String} Computed class name for this badge.
      */
-    _computeBageClass: function(input) {
+    _computeBageClass(input) {
       if (typeof input === 'string') {
         return !!input ? 'badge' : 'badge empty';
       }
       return input === 0 ? 'badge empty' : 'badge';
-    },
+    }
     /**
      * Compute size of the HTTP headers.
      * Note, it only checks for number of lines. It doeasn't check if each line
@@ -558,72 +592,74 @@ Custom property | Description | Default
      * @param {String} headers The headers strings to count.
      * @return {Number} Size of the headers in passed string.
      */
-    _computeHeadersLength: function(headers) {
+    _computeHeadersLength(headers) {
       if (!headers) {
         return 0;
       }
       return headers.split('\n').length;
-    },
-    // Computes if `statusMessage` is set.
-    _httpMessageChanged: function(message) {
-      var status = !!message;
-      this._setHasHttpMessage(status);
-    },
+    }
+    /**
+     * Computes value for `hasHttpMessage` property.
+     * @param {String|undefined} message HTTP message string.
+     * @return {Boolean}
+     */
+    _computeHasHttpMessage(message) {
+      return !!message;
+    }
 
-    _roundTime: function(num) {
+    _roundTime(num) {
       num = Number(num);
       if (num !== num) {
         return '';
       }
       return num.toFixed(2);
-    },
+    }
     // Toggles collapsable element.
-    toggleCollapse: function() {
+    toggleCollapse() {
       this.opened = !this.opened;
-    },
+    }
     // Computes class for the toggle's button icon.
-    _computeToggleIconClass: function(opened) {
+    _computeToggleIconClass(opened) {
       var clazz = 'toggle-icon';
       if (opened) {
         clazz += ' opened';
       }
       return clazz;
-    },
+    }
     /**
-     * This async function is executed after some thime of setting the status
-     * code. If after set period of time the `statusMessage` is still not set
-     * the it will use the `<status-message>` element to generate default
-     * status text message as defined in the spec.
+     * Runs status text recognition after ~100 ms to ensure a status message
+     * is displayed event if there wasn't any.
      */
-    assignStatusMessage: function() {
-      this.async(function() {
+    assignStatusMessage() {
+      setTimeout(() => {
         if (this.statusMessage) {
           return;
         }
-        var element = document.createElement('status-message');
-        element.code = this.statusCode;
-        this.statusMessage = element.message;
+        /* global StatusMessage */
+        const msg = new StatusMessage();
+        this.statusMessage = msg.getMessage(this.statusCode);
       }, 100);
-    },
+    }
     // Resets current tab when isXhr is true.
-    _isXhrChanged: function(value) {
+    _isXhrChanged(value) {
       if (value === undefined) {
         return;
       }
       if (value && this.selectedTab > 1) {
         this.selectedTab = 0;
       }
-      var tabs = this.$$('paper-tabs');
+      const tabs = this.shadowRoot.querySelector('paper-tabs');
       if (!tabs) {
         console.warn('Tabs panel not found in DOM');
         return;
       }
       tabs.notifyResize();
-    },
+    }
     // Computes if request headers has been set.
-    _computeHasRequestHeaders: function(requestHeaders) {
+    _computeHasRequestHeaders(requestHeaders) {
       return !!requestHeaders;
     }
-  });
+  }
+  window.customElements.define(ResponseStatusView.is, ResponseStatusView);
   </script>
 </dom-module>
