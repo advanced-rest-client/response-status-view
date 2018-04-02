@@ -25,67 +25,16 @@ the License.
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../arc-icons/arc-icons.html">
 <link rel="import" href="http-source-message-view.html">
+<link rel="import" href="response-redirects-panel.html">
+<link rel="import" href="response-status-mixin.html">
+<link rel="import" href="response-status-styles.html">
 <script src="status-message.js"></script>
 <dom-module id="response-status-view">
   <template>
-    <style>
+    <style include="response-status-styles">
     :host {
       @apply --layout-vertical;
       @apply --response-status-view;
-    }
-
-    .status-row,
-    .timings-row {
-      @apply --layout-horizontal;
-      @apply --arc-font-subhead;
-      @apply --layout-center;
-      min-height: 56px;
-    }
-
-    .status-row {
-      border-bottom: 1px var(--response-status-view-status-info-border-color, #e5e5e5) solid;
-    }
-
-    .timings-row {
-      padding-right: 0;
-    }
-
-    .status-label {
-      width: 40px;
-      @apply --arc-font-subhead;
-    }
-
-    .status-value {
-      @apply --layout-flex;
-      @apply --layout-horizontal;
-      @apply --layout-center;
-      @apply --response-status-view-status-container;
-    }
-
-    .status-value > span {
-      display: block;
-    }
-
-    .redirect-value {
-      margin-top: 12px;
-      @apply --layout-flex;
-    }
-
-    .no-redirects-container {
-      @apply --layout-vertical;
-      @apply --layout-center;
-    }
-
-    .no-redirects-info {
-      @apply --no-info-message;
-    }
-
-    headers-list-view {
-      margin-top: 12px;
-    }
-
-    .text {
-      @apply --select-text;
     }
 
     .badge {
@@ -104,30 +53,6 @@ the License.
     .badge.empty {
       background-color: var(--response-status-view-empty-badge-background, #9e9e9e);
       color: var(--response-status-view-empty-badge-color, #fff);
-    }
-
-    .status-value.status.text > span:not(:first-child) {
-      margin-left: 8px;
-    }
-
-    .status-code-value {
-      padding: 4px 8px;
-      color: #fff;
-      border-radius: 2px;
-      display: block;
-      background-color: var(--arc-status-code-color-200, rgba(56, 142, 60, 1));
-    }
-
-    .info.status-code-value {
-      background-color: var(--arc-status-code-color-300, rgba(48, 63, 159, 1));
-    }
-
-    .warning.status-code-value {
-      background-color: var(--arc-status-code-color-400, rgba(245, 124, 0, 1));
-    }
-
-    .error.status-code-value {
-      background-color: var(--arc-status-code-color-500, rgba(211, 47, 47, 1));
     }
 
     .response-time {
@@ -168,10 +93,6 @@ the License.
       @apply --arc-font-subhead;
     }
 
-    .redirect-location {
-      margin-left: 8px;
-    }
-
     .response-error-label {
       margin-left: 12px;
       color: var(--arc-status-code-color-500, rgba(211, 47, 47, 1));
@@ -203,6 +124,10 @@ the License.
       padding-left: 16px;
       @apply --no-info-message;
     }
+
+    [hidden] {
+      display: none !important;
+    }
     </style>
     <div class="status-row">
       <div class="status-value status">
@@ -212,7 +137,7 @@ the License.
             <span class="response-time" hidden$="[[!loadingTime]]">[[_roundTime(loadingTime)]] ms</span>
           </div>
           <div class="status-details">
-            <paper-button on-tap="toggleCollapse" class="toggle-button" title="Toogle response headers">
+            <paper-button on-tap="toggleCollapse" class="toggle-button" title="Toogles response headers">
               Details
               <iron-icon icon="arc:expand-more" class$="[[_computeToggleIconClass(opened)]]"></iron-icon>
             </paper-button>
@@ -250,42 +175,33 @@ the License.
         </template>
       </paper-tabs>
       <iron-pages selected="[[selectedTab]]">
-        <headers-list-view on-tap="_handleLink" headers="[[responseHeaders]]"></headers-list-view>
-        <section class="request-header-panel">
+        <section class="response-headers-panel">
+          <template is="dom-if" if="[[hasResponseHeaders]]">
+            <headers-list-view type="response" on-tap="_handleLink" headers="[[responseHeaders]]" data-source="response-headers"></headers-list-view>
+          </template>
+          <template is="dom-if" if="[[!hasResponseHeaders]]">
+            <div class="no-info-container">
+              <p class="no-info">Nothing to display here</p>
+            </div>
+          </template>
+        </section>
+        <section class="request-headers-panel">
           <template is="dom-if" if="[[hasRequestHeaders]]">
-            <headers-list-view type="request" on-tap="_handleLink" headers="[[requestHeaders]]"></headers-list-view>
+            <headers-list-view type="request" on-tap="_handleLink" headers="[[requestHeaders]]" data-source="request-headers"></headers-list-view>
           </template>
           <template is="dom-if" if="[[!hasRequestHeaders]]">
-            <p class="no-info">Nothing to display here</p>
+            <div class="no-info-container">
+              <p class="no-info">Nothing to display here</p>
+            </div>
           </template>
           <template is="dom-if" if="[[hasHttpMessage]]">
             <http-source-message-view message="[[httpMessage]]"></http-source-message-view>
           </template>
         </section>
-        <section class="redirects-panel">
-          <template is="dom-if" if="[[!redirects.length]]">
-            <div class="no-redirects-container">
-              <p class="no-redirects-info">There were no redirects during this request</p>
-            </div>
-          </template>
-          <template is="dom-repeat" items="[[redirects]]">
-            <div class="status-row">
-              <div class="status-label text">
-                #<span>[[_computeIndexName(index)]]</span>
-              </div>
-              <div class="redirect-value" on-tap="_handleLink">
-                <div class="status-value status text">
-                  <span class$="[[_computeStatusClass(item.status)]]">[[item.status]] [[item.statusText]]</span>
-                  <span class="redirect-location">to: <a href="[[_computeRedirectLocation(item.headers)]]" class="auto-link">[[_computeRedirectLocation(item.headers)]]</a></span>
-                </div>
-                <headers-list-view headers="[[item.headers]]"></headers-list-view>
-              </div>
-            </div>
-          </template>
-        </section>
-        <section class="timings-panel">
-          <request-timings-panel redirects="[[redirectTimings]]" timings="[[timings]]"></request-timings-panel>
-        </section>
+        <template is="dom-if" if="[[!isXhr]]">
+          <response-redirects-panel redirects="[[redirects]]"></response-redirects-panel>
+          <request-timings-panel redirect-timings="[[redirectTimings]]" timings="[[timings]]"></request-timings-panel>
+        </template>
       </iron-pages>
     </iron-collapse>
   </template>
@@ -317,6 +233,21 @@ the License.
    *  response-headers="[[responseHeaders]]"
    *  loading-time="[[loadingTime]]"></response-status-view>
    * ```
+   *
+   * ## Understanding `is-xhr`
+   *
+   * ARC (Advanced REST client) uses it's own HTTP client library to connect to
+   * the server. Because of that it collects much more information about the
+   * connection itself. When the response ends it reports detailed redirects
+   * information. Each response (including redirects) has detailed timing
+   * infomration. The timing object applies HAT 1.2 spec. When `is-xhr`
+   * attribute is not set, the element expect to received additional data
+   * available in ARC app. Element renders additional tabs to list redirects
+   * and table of timing information.
+   *
+   * Simple requerst objects like XHR or Fetch does not allow to collect this
+   * information in such details. In this case `is-xhr` should be set so the
+   * element won't render a view that can never be used.
    *
    * ## Data model
    *
@@ -378,8 +309,9 @@ the License.
    * @polymer
    * @demo demo/index.html
    * @memberof ApiElements
+   * @appliesMixin ArcBehaviors.ResponseStatusMixin
    */
-  class ResponseStatusView extends Polymer.Element {
+  class ResponseStatusView extends ArcBehaviors.ResponseStatusMixin(Polymer.Element) {
     static get is() { return 'response-status-view'; }
     static get properties() {
       return {
@@ -395,9 +327,17 @@ the License.
           type: Number,
           value: 0
         },
-        // The response headers as a HTTP headers string
-        responseHeaders: {
-          type: String
+        /**
+         * The response headers as a HTTP headers string
+         */
+        responseHeaders: String,
+        /**
+         * Computed value, `true` if response headers are set
+         */
+        hasResponseHeaders: {
+          type: String,
+          value: false,
+          computed: '_computeHasHeaders(responseHeaders)'
         },
         // The request headers as a HTTP headers string
         requestHeaders: String,
@@ -405,7 +345,7 @@ the License.
         hasRequestHeaders: {
           type: String,
           value: false,
-          computed: '_computeHasRequestHeaders(requestHeaders)'
+          computed: '_computeHasHeaders(requestHeaders)'
         },
         /**
          * Raw HTTP message sent to the server.
@@ -418,12 +358,12 @@ the License.
         // Computed value, true when source HTTP message is not set.
         hasHttpMessage: {
           type: Boolean,
-          value: false,
           readOnly: true,
           computed: '_computeHasHttpMessage(httpMessage)'
         },
         /**
          * An Error object representing the response error.
+         * It uses this property only to determine if the request is errored
          */
         responseError: {
           type: Object
@@ -433,28 +373,21 @@ the License.
           type: Boolean,
           value: false,
           readOnly: true,
-          computed: '_computeIsError(responseError)'
+          computed: '_computeIsError(responseError)',
+          observer: '_isErrorChanged'
         },
         /**
          * An array of redirect responses.
          * Each of the response objects should be regular Response objects.
          */
-        redirects: {
-          type: Array,
-          value: []
-        },
+        redirects: Array,
         /**
          * List of timings occured during the redirects.
          * This list should be ordered by the time of redirection.
          * See the `request-timings` element documentation for more
          * information.
          */
-        redirectTimings: {
-          type: Array,
-          value: function() {
-            return [];
-          }
-        },
+        redirectTimings: Array,
         // Currently selected tab.
         selectedTab: {
           type: Number,
@@ -478,7 +411,8 @@ the License.
          */
         isXhr: {
           type: Boolean,
-          observer: '_isXhrChanged'
+          observer: '_isXhrChanged',
+          value: false
         },
         // True if the collapsable element is opened
         opened: {
@@ -489,7 +423,6 @@ the License.
         requestUrl: String,
         // A HTTP method used to make a request
         requestMethod: String
-
       };
     }
 
@@ -499,69 +432,13 @@ the License.
       }
     }
 
-    _computeStatusClass(code) {
-      var cls = 'status-code-value';
-      if (code >= 500 || code === 0) {
-        cls += ' error';
-      }
-      if (code >= 400 && code < 500) {
-        cls += ' warning';
-      }
-      if (code >= 300 && code < 400) {
-        cls += ' info';
-      }
-      return cls;
-    }
-
     _statusCodeChanged() {
-      if (!this.statusCode) {
+      if (this.statusCode === undefined) {
         this.statusCode = 0;
       }
       this.assignStatusMessage();
     }
 
-    /** Compute index to 1-based index. */
-    _computeIndexName(index) {
-      return index + 1;
-    }
-    /** Catch headers link click and send proper event to the listeners. */
-    _handleLink(e) {
-      e.preventDefault();
-      const path = e.composedPath();
-      if (path[0].nodeName === 'A') {
-        const ev = new CustomEvent('action-link-change', {
-          detail: {
-            url: path[0].href
-          },
-          bubbles: true,
-          composed: true,
-          cancelable: true
-        });
-        this.dispatchEvent(ev);
-      }
-    }
-    /**
-     * Extracts a location URL form the headers.
-     *
-     * @param {String} headers A HTTP headers string.
-     * @return {String} A value of the location header or `unknown` if not
-     * found.
-     */
-    _computeRedirectLocation(headers) {
-      let def = 'unknown';
-      if (!headers) {
-        return def;
-      }
-      if (typeof headers === 'string') {
-        const match = headers.match(/^location: (.*)$/im);
-        if (!match) {
-          return def;
-        }
-        return match[1];
-      }
-      const location = headers.get('location');
-      return location || def;
-    }
     /**
      * Computes value for `isError` property.
      * @param {Object} responseError Response error object
@@ -579,10 +456,15 @@ the License.
      * @return {String} Computed class name for this badge.
      */
     _computeBageClass(input) {
-      if (typeof input === 'string') {
-        return !!input ? 'badge' : 'badge empty';
+      const cls = 'badge';
+      const clsEmpty = cls + ' empty';
+      if (input === undefined) {
+        return clsEmpty;
       }
-      return input === 0 ? 'badge empty' : 'badge';
+      if (typeof input === 'string') {
+        return !!input ? cls : clsEmpty;
+      }
+      return input === 0 ? clsEmpty : cls;
     }
     /**
      * Compute size of the HTTP headers.
@@ -655,9 +537,18 @@ the License.
       }
       tabs.notifyResize();
     }
-    // Computes if request headers has been set.
-    _computeHasRequestHeaders(requestHeaders) {
+    // Computes if headers are set
+    _computeHasHeaders(requestHeaders) {
       return !!requestHeaders;
+    }
+    /**
+     * Closes the collapse when error is set.
+     * @param {Boolean} error Flag indicating error
+     */
+    _isErrorChanged(error) {
+      if (error) {
+        this.opened = false;
+      }
     }
   }
   window.customElements.define(ResponseStatusView.is, ResponseStatusView);
