@@ -14,7 +14,7 @@
     "The Advanced REST client authors <arc@mulesoft.com>"
   ],
   "scripts": {
-    "lint": "polymer lint response-status-view.html http-source-message-view.html",
+    "lint": "polymer lint response-status-view.html http-source-message-view.html response-redirects-panel.html response-status-styles.html response-status-mixin.html",
     "test-sauce": "polymer test --plugin sauce --job-name \"response-status-view:local-test\"",
     "test": "polymer test --plugin local",
     "update-types": "gen-typescript-declarations --deleteExisting --outDir ."
