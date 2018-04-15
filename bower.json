@@ -41,7 +41,8 @@
     "iron-test-helpers": "PolymerElements/iron-test-helpers#^2.0.0",
     "iron-component-page": "PolymerElements/iron-component-page#^3.0.1",
     "paper-input": "PolymerElements/paper-input#^2.0.0",
-    "arc-definitions": "advanced-rest-client/arc-definitions#^2.0.0"
+    "arc-definitions": "advanced-rest-client/arc-definitions#^2.0.0",
+    "arc-polyfills": "advanced-rest-client/arc-polyfills#^0.1.11"
   },
   "ignore": [
     "**/.*",

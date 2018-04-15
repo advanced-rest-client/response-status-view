@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../iron-test-helpers/mock-interactions.js"></script>
+    <link rel="import" href="../../arc-polyfills/arc-polyfills.html">
+    <link rel="import" href="../http-source-message-view.html">
+  </head>
+  <body>
+
+    <test-fixture id="basic">
+      <template>
+        <http-source-message-view opened></http-source-message-view>
+      </template>
+    </test-fixture>
+
+    <script>
+    suite('http-source-message-view', () => {
+      const httpMessage = 'GET / HTTP/1.1\nHost: domain.com\naccept: text/plain\n\n\n';
+
+      let element;
+      setup((done) => {
+        element = fixture('basic');
+        element.message = httpMessage;
+        flush(() => done());
+      });
+
+      test('Toggle icon button is computed to opened', () => {
+        const icon = element.shadowRoot.querySelector('paper-icon-button');
+        assert.equal(icon.icon, 'arc:expand-less');
+      });
+
+      test('Toggle icon button is computed to closed when not opened', () => {
+        element.opened = false;
+        const icon = element.shadowRoot.querySelector('paper-icon-button');
+        assert.equal(icon.icon, 'arc:expand-more');
+      });
+
+      test('toggle() toggles opened state', () => {
+        element.toggle();
+        assert.isFalse(element.opened);
+      });
+
+      test('Toggle button toggles view', () => {
+        const icon = element.shadowRoot.querySelector('paper-icon-button');
+        assert.equal(icon.icon, 'arc:expand-less');
+      });
+    });
+    </script>
+  </body>
+</html>

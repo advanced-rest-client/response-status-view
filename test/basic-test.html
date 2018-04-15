@@ -1,0 +1,337 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../iron-test-helpers/mock-interactions.js"></script>
+    <link rel="import" href="../../arc-polyfills/arc-polyfills.html">
+    <link rel="import" href="../response-status-view.html">
+  </head>
+  <body>
+
+    <test-fixture id="basic">
+      <template>
+        <response-status-view></response-status-view>
+      </template>
+    </test-fixture>
+
+    <test-fixture id="Opened">
+      <template>
+        <response-status-view opened></response-status-view>
+      </template>
+    </test-fixture>
+
+    <script>
+    suite('Basic', () => {
+      const request = {
+        url: 'https://domain.com/',
+        method: 'GET',
+        headers: 'accept: text/plain'
+      };
+
+      let headers = 'content-type: text/plain\nlocation: ';
+      headers += 'https://other.domain.com\ncontent-length: 30';
+
+      const response = {
+        status: 200,
+        statusText: 'OK',
+        payload: 'Hello world',
+        headers: 'content-type: text/plain\ncontent-length: 30'
+      };
+
+      const redirects = [{
+        status: 301,
+        statusText: 'Not here',
+        payload: 'Go to https://other.domain.com',
+        headers: headers
+      }];
+
+      const loadingTime = 124.12345678;
+      const httpMessage = 'GET / HTTP/1.1\nHost: domain.com\naccept: text/plain\n\n\n';
+
+      suite('_computeStatusClass()', () => {
+        let element;
+        setup(() => {
+          element = fixture('basic');
+        });
+
+        test('Has base class name', () => {
+          const result = element._computeStatusClass();
+          assert.isTrue(result.indexOf('status-code-value') !== -1);
+        });
+
+        test('Has info class name', () => {
+          const result = element._computeStatusClass(300);
+          assert.isTrue(result.indexOf('info') !== -1);
+        });
+
+        test('Has warning class name', () => {
+          const result = element._computeStatusClass(400);
+          assert.isTrue(result.indexOf('warning') !== -1);
+        });
+
+        test('Has error class name', () => {
+          const result = element._computeStatusClass(500);
+          assert.isTrue(result.indexOf('error') !== -1);
+        });
+
+        test('Has error class for 0', () => {
+          const result = element._computeStatusClass(0);
+          assert.isTrue(result.indexOf('error') !== -1);
+        });
+      });
+
+      suite('Status labels', () => {
+        let element;
+        setup((done) => {
+          element = fixture('basic');
+          element.statusCode = response.status;
+          element.statusMessage = response.statusText;
+          flush(() => done());
+        });
+
+        test('Status code is rendered', () => {
+          const label = element.shadowRoot.querySelector('.status-code-value');
+          assert.isTrue(label.innerText.indexOf('200') !== -1);
+        });
+
+        test('Status text is rendered', () => {
+          const label = element.shadowRoot.querySelector('.status-code-value');
+          assert.isTrue(label.innerText.indexOf('OK') !== -1);
+        });
+      });
+
+      suite('loading time', () => {
+        let element;
+        setup((done) => {
+          element = fixture('basic');
+          element.loadingTime = loadingTime;
+          flush(() => done());
+        });
+
+        test('Renders loading time', () => {
+          const label = element.shadowRoot.querySelector('.response-time');
+          assert.ok(label);
+        });
+
+        test('Rounds time', () => {
+          const label = element.shadowRoot.querySelector('.response-time');
+          assert.isTrue(label.innerText.indexOf('124.12') !== -1);
+          assert.isTrue(label.innerText.indexOf('124.123') === -1);
+        });
+      });
+
+      suite('Toggle view button', () => {
+        let element;
+        setup((done) => {
+          element = fixture('basic');
+          flush(() => done());
+        });
+
+        test('Toggles the view', () => {
+          const button = element.shadowRoot.querySelector('.toggle-button');
+          assert.isFalse(element.opened);
+          MockInteractions.tap(button);
+          assert.isTrue(element.opened);
+        });
+
+        test('Icon class is not opened', () => {
+          const icon = element.shadowRoot.querySelector('.toggle-button iron-icon');
+          assert.equal(icon.className.indexOf('opened'), -1);
+        });
+
+        test('Icon class is opened when opened', () => {
+          element.opened = true;
+          const icon = element.shadowRoot.querySelector('.toggle-button iron-icon');
+          assert.notEqual(icon.className.indexOf('opened'), -1);
+        });
+      });
+
+      suite('Request summary data', () => {
+        let element;
+        setup((done) => {
+          element = fixture('Opened');
+          element.requestUrl = request.url;
+          element.requestMethod = request.method;
+          flush(() => done());
+        });
+
+        test('Renders status-url', () => {
+          const label = element.shadowRoot.querySelector('.status-url');
+          assert.ok(label);
+        });
+
+        test('Renders HTTP method label', () => {
+          const label = element.shadowRoot.querySelector('.http-method');
+          assert.ok(label);
+          assert.isTrue(label.innerText.indexOf('GET') !== -1);
+        });
+
+        test('Renders URL label', () => {
+          const label = element.shadowRoot.querySelector('.request-url');
+          assert.ok(label);
+          assert.isTrue(label.innerText.indexOf('https://domain.com/') !== -1);
+        });
+      });
+
+      suite('_computeBageClass()', () => {
+        let element;
+        setup(() => {
+          element = fixture('Opened');
+        });
+
+        test('Returns empty when no input', () => {
+          const result = element._computeBageClass();
+          assert.equal(result, 'badge empty');
+        });
+
+        test('Returns empty for 0', () => {
+          const result = element._computeBageClass(0);
+          assert.equal(result, 'badge empty');
+        });
+
+        test('Returns empty for empty string', () => {
+          const result = element._computeBageClass('');
+          assert.equal(result, 'badge empty');
+        });
+
+        test('Returns not empty for string', () => {
+          const result = element._computeBageClass('test');
+          assert.equal(result, 'badge');
+        });
+
+        test('Returns not empty for number', () => {
+          const result = element._computeBageClass(1);
+          assert.equal(result, 'badge');
+        });
+      });
+
+      suite('_computeHeadersLength()', () => {
+        let element;
+        setup(() => {
+          element = fixture('Opened');
+        });
+
+        test('Computes 0 for no input', () => {
+          const result = element._computeHeadersLength();
+          assert.equal(result, 0);
+        });
+
+        test('Computes 0 for empty input', () => {
+          const result = element._computeHeadersLength('');
+          assert.equal(result, 0);
+        });
+
+        test('Computes single header', () => {
+          const result = element._computeHeadersLength(request.headers);
+          assert.equal(result, 1);
+        });
+
+        test('Computes multiple header', () => {
+          const result = element._computeHeadersLength(response.headers);
+          assert.equal(result, 2);
+        });
+      });
+
+
+      suite('Tabs labels', () => {
+        let element;
+        setup((done) => {
+          element = fixture('Opened');
+          element.requestHeaders = request.headers;
+          element.responseHeaders = response.headers;
+          element.redirects = redirects;
+          flush(() => done());
+        });
+
+        test('Renders badge for response headers', () => {
+          const tab = element.shadowRoot.querySelectorAll('paper-tabs paper-tab')[0];
+          const label = tab.querySelector('.badge');
+          assert.equal(label.className.indexOf('empty'), -1, 'Badge is not empty');
+          assert.isTrue(label.innerText.indexOf('2') !== -1, 'Renders number of headers');
+        });
+
+        test('Renders badge for request headers', () => {
+          const tab = element.shadowRoot.querySelectorAll('paper-tabs paper-tab')[1];
+          const label = tab.querySelector('.badge');
+          assert.equal(label.className.indexOf('empty'), -1, 'Badge is not empty');
+          assert.isTrue(label.innerText.indexOf('1') !== -1, 'Renders number of headers');
+        });
+
+        test('Renders badge for redirects', () => {
+          const tab = element.shadowRoot.querySelectorAll('paper-tabs paper-tab')[2];
+          const label = tab.querySelector('.badge');
+          assert.equal(label.className.indexOf('empty'), -1, 'Badge is not empty');
+          assert.isTrue(label.innerText.indexOf('1') !== -1, 'Renders number of redirects');
+        });
+      });
+
+      suite('Response headers view', () => {
+        let element;
+        setup((done) => {
+          element = fixture('Opened');
+          element.responseHeaders = response.headers;
+          flush(() => done());
+        });
+
+        test('hasResponseHeaders is computed', () => {
+          assert.isTrue(element.hasResponseHeaders);
+        });
+
+        test('Renders headers list panel', () => {
+          const panel = element.shadowRoot.querySelector('headers-list-view[type="response"]');
+          assert.ok(panel);
+        });
+
+        test('Renders no info message when no headers', (done) => {
+          element.responseHeaders = undefined;
+          flush(() => {
+            const label = element.shadowRoot.querySelector('.response-headers-panel .no-info-container');
+            assert.ok(label);
+            done();
+          });
+        });
+      });
+
+      suite('Request headers view', () => {
+        let element;
+        setup((done) => {
+          element = fixture('Opened');
+          element.requestHeaders = request.headers;
+          element.httpMessage = httpMessage;
+          flush(() => done());
+        });
+
+        test('hasRequestHeaders is computed', () => {
+          assert.isTrue(element.hasRequestHeaders);
+        });
+
+        test('hasHttpMessage is computed', () => {
+          assert.isTrue(element.hasHttpMessage);
+        });
+
+        test('Renders headers list panel', () => {
+          const panel = element.shadowRoot.querySelector('headers-list-view[type="request"]');
+          assert.ok(panel);
+        });
+
+        test('Renders http-source-message-view', () => {
+          const panel = element.shadowRoot.querySelector('http-source-message-view');
+          assert.ok(panel);
+        });
+
+        test('Renders no info message when no headers', (done) => {
+          element.requestHeaders = undefined;
+          flush(() => {
+            const label = element.shadowRoot.querySelector('.request-headers-panel .no-info-container');
+            assert.ok(label);
+            done();
+          });
+        });
+      });
+    });
+    </script>
+  </body>
+</html>
