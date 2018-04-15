@@ -40,7 +40,7 @@ global.ArcBehaviors.ResponseStatusMixin = Polymer.dedupingMixin((base) => {
      * @return {String} Css class name for status code.
      */
     _computeStatusClass(code) {
-      var cls = 'status-code-value';
+      let cls = 'status-code-value';
       if (code >= 500 || code === 0) {
         cls += ' error';
       }
