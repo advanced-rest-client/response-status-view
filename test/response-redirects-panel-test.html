@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../iron-test-helpers/mock-interactions.js"></script>
+    <link rel="import" href="../../arc-polyfills/arc-polyfills.html">
+    <link rel="import" href="../response-redirects-panel.html">
+  </head>
+  <body>
+
+    <test-fixture id="basic">
+      <template>
+        <response-redirects-panel></response-redirects-panel>
+      </template>
+    </test-fixture>
+
+    <script>
+    suite('http-source-message-view', () => {
+      let headers = 'content-type: text/plain\nlocation: ';
+      headers += 'https://other.domain.com\ncontent-length: 30';
+      const redirects = [{
+        status: 301,
+        statusText: 'Not here',
+        payload: 'Go to https://other.domain.com',
+        headers: headers
+      }, {
+        status: 307,
+        statusText: 'Go out',
+        payload: 'Go to https://some.domain.com',
+        headers: 'location:/relative-path'
+      }];
+
+      let element;
+      setup((done) => {
+        element = fixture('basic');
+        element.redirects = redirects;
+        flush(() => done());
+      });
+
+      test('hasRedirects is computed', () => {
+        assert.isTrue(element.hasRedirects);
+      });
+
+      test('_computeIndexName() increments by 1', () => {
+        let result = element._computeIndexName(0);
+        assert.equal(result, 1);
+        result = element._computeIndexName(1);
+        assert.equal(result, 2);
+      });
+
+      test('_computeRedirectLocation() computes location', () => {
+        let result = element._computeRedirectLocation(headers);
+        assert.equal(result, 'https://other.domain.com');
+        result = element._computeRedirectLocation('location:/path');
+        assert.equal(result, '/path');
+      });
+
+      test('Renders 2 redirects', () => {
+        const rows = element.shadowRoot.querySelectorAll('.status-row');
+        assert.equal(rows.length, 2);
+      });
+    });
+    </script>
+  </body>
+</html>

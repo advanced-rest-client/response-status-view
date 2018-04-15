@@ -108,13 +108,13 @@ the License.
         return def;
       }
       if (typeof headers === 'string') {
-        const match = headers.match(/^location: (.*)$/im);
+        const match = headers.match(/^location:\s?(.*)$/im);
         if (!match) {
           return def;
         }
         return match[1];
       }
-      const location = headers.get('location');
+      const location = headers.get && headers.get('location');
       return location || def;
     }
 

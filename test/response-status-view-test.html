@@ -11,7 +11,7 @@
   </head>
   <body>
 
-    <test-fixture id="basic">
+    <test-fixture id="Basic">
       <template>
         <response-status-view></response-status-view>
       </template>
@@ -24,7 +24,7 @@
     </test-fixture>
 
     <script>
-    suite('Basic', () => {
+    suite('response-status-view', () => {
       const request = {
         url: 'https://domain.com/',
         method: 'GET',
@@ -53,8 +53,9 @@
 
       suite('_computeStatusClass()', () => {
         let element;
-        setup(() => {
-          element = fixture('basic');
+        suiteSetup((done) => {
+          element = fixture('Basic');
+          flush(() => done());
         });
 
         test('Has base class name', () => {
@@ -85,8 +86,8 @@
 
       suite('Status labels', () => {
         let element;
-        setup((done) => {
-          element = fixture('basic');
+        suiteSetup((done) => {
+          element = fixture('Basic');
           element.statusCode = response.status;
           element.statusMessage = response.statusText;
           flush(() => done());
@@ -105,8 +106,8 @@
 
       suite('loading time', () => {
         let element;
-        setup((done) => {
-          element = fixture('basic');
+        suiteSetup((done) => {
+          element = fixture('Basic');
           element.loadingTime = loadingTime;
           flush(() => done());
         });
@@ -126,7 +127,7 @@
       suite('Toggle view button', () => {
         let element;
         setup((done) => {
-          element = fixture('basic');
+          element = fixture('Basic');
           flush(() => done());
         });
 
@@ -151,7 +152,7 @@
 
       suite('Request summary data', () => {
         let element;
-        setup((done) => {
+        suiteSetup((done) => {
           element = fixture('Opened');
           element.requestUrl = request.url;
           element.requestMethod = request.method;
@@ -178,7 +179,7 @@
 
       suite('_computeBageClass()', () => {
         let element;
-        setup(() => {
+        suiteSetup(() => {
           element = fixture('Opened');
         });
 
@@ -210,7 +211,7 @@
 
       suite('_computeHeadersLength()', () => {
         let element;
-        setup(() => {
+        suiteSetup(() => {
           element = fixture('Opened');
         });
 
@@ -238,7 +239,7 @@
 
       suite('Tabs labels', () => {
         let element;
-        setup((done) => {
+        suiteSetup((done) => {
           element = fixture('Opened');
           element.requestHeaders = request.headers;
           element.responseHeaders = response.headers;
