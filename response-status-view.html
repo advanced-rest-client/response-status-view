@@ -28,7 +28,6 @@ the License.
 <link rel="import" href="response-redirects-panel.html">
 <link rel="import" href="response-status-mixin.html">
 <link rel="import" href="response-status-styles.html">
-<script src="status-message.js"></script>
 <dom-module id="response-status-view">
   <template>
     <style include="response-status-styles">
@@ -134,10 +133,12 @@ the License.
         <template is="dom-if" if="[[!isError]]">
           <div class="status-info text">
             <span class$="[[_computeStatusClass(statusCode)]]">[[statusCode]] [[statusMessage]]</span>
-            <span class="response-time" hidden$="[[!loadingTime]]">[[_roundTime(loadingTime)]] ms</span>
+            <template is="dom-if" if="[[loadingTime]]">
+              <span class="response-time">[[_roundTime(loadingTime)]] ms</span>
+            </template>
           </div>
           <div class="status-details">
-            <paper-button on-tap="toggleCollapse" class="toggle-button" title="Toogles response headers">
+            <paper-button on-click="toggleCollapse" class="toggle-button" title="Toogles response details">
               Details
               <iron-icon icon="arc:expand-more" class$="[[_computeToggleIconClass(opened)]]"></iron-icon>
             </paper-button>
@@ -153,7 +154,9 @@ the License.
     <iron-collapse opened="[[opened]]">
       <template is="dom-if" if="[[requestUrl]]">
         <div class="status-url">
-          <span class="http-method" hidden$="[[!requestMethod]]">[[requestMethod]]</span>
+          <template is="dom-if" if="[[requestMethod]]">
+            <span class="http-method">[[requestMethod]]</span>
+          </template>
           <span class="request-url">[[requestUrl]]</span>
         </div>
       </template>
@@ -177,7 +180,7 @@ the License.
       <iron-pages selected="[[selectedTab]]">
         <section class="response-headers-panel">
           <template is="dom-if" if="[[hasResponseHeaders]]">
-            <headers-list-view type="response" on-tap="_handleLink" headers="[[responseHeaders]]" data-source="response-headers"></headers-list-view>
+            <headers-list-view type="response" on-click="_handleLink" headers="[[responseHeaders]]" data-source="response-headers"></headers-list-view>
           </template>
           <template is="dom-if" if="[[!hasResponseHeaders]]">
             <div class="no-info-container">
@@ -187,7 +190,7 @@ the License.
         </section>
         <section class="request-headers-panel">
           <template is="dom-if" if="[[hasRequestHeaders]]">
-            <headers-list-view type="request" on-tap="_handleLink" headers="[[requestHeaders]]" data-source="request-headers"></headers-list-view>
+            <headers-list-view type="request" on-click="_handleLink" headers="[[requestHeaders]]" data-source="request-headers"></headers-list-view>
           </template>
           <template is="dom-if" if="[[!hasRequestHeaders]]">
             <div class="no-info-container">

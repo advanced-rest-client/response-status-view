@@ -19,7 +19,7 @@ the License.
 <dom-module id="http-source-message-view">
   <template>
     <style>
-     :host {
+    :host {
       margin: 16px 16px 0 16px;
       overflow: auto;
       display: block;
@@ -36,12 +36,13 @@ the License.
     }
 
     h5 {
+      @apply --arc-font-body2;
       margin: 0;
       display: inline-block;
       cursor: pointer;
     }
     </style>
-    <h5 on-tap="toggle">
+    <h5 on-click="toggle">
       Source message
       <paper-icon-button icon="[[_computeIcon(opened)]]"></paper-icon-button>
     </h5>
