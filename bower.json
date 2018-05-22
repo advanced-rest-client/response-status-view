@@ -1,7 +1,7 @@
 {
   "name": "response-status-view",
   "description": "HTTP response status view, including status, headers redirects and timings",
-  "version": "2.0.0-preview",
+  "version": "2.0.0",
   "license": "Apache-2.0",
   "authors": [
     "Pawel Psztyc",
@@ -26,8 +26,8 @@
     "paper-icon-button": "PolymerElements/paper-icon-button#^2.2.0",
     "paper-tabs": "PolymerElements/paper-tabs#^2.1.0",
     "iron-pages": "PolymerElements/iron-pages#^2.1.0",
-    "headers-list-view": "advanced-rest-client/headers-list-view#2.0.0-preview",
-    "request-timings": "advanced-rest-client/request-timings#2.0.0-preview",
+    "headers-list-view": "advanced-rest-client/headers-list-view#^2.0.0",
+    "request-timings": "advanced-rest-client/request-timings#^2.0.0",
     "arc-icons": "advanced-rest-client/arc-icons#^2.0.0",
     "iron-collapse": "PolymerElements/iron-collapse#^2.2.0",
     "paper-checkbox": "PolymerElements/paper-checkbox#^2.0.0",
