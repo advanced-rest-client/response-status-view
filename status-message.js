@@ -1,54 +1,17 @@
-<script>
 /**
- * Use the `<status-message>` element to generate status message for corresponding
- * status code.
- *
- * ## Usage
- * Create an element and set the `code` property. The `message` property will be
- * set synchronously with the corresponding HTTP status message (in spec defined
- * as a reason message).
- * If the status code is non standard status code then the message property
- * will be `undefined`.
- *
- * ### Example:
- * ```
- * var element = document.createElement('status-message');
- * element.code = 201;
- * console.log(element.message);
- * ```
- * Note that the `code` can be string and it will be converted into the numeric
- * value.
+ * A class that reads response status code and returns default HTTP status
+ * message associated with it.
  */
-Polymer({
-  is: 'status-message',
-  properties: {
-    /**
-     * The status code.
-     */
-    code: {
-      type: Number,
-      observer: 'setMessage'
-    },
-    /**
-     * Mesage associated with the status code.
-     * It will be filled as soon as `code` change.
-     */
-    message: {
-      type: String,
-      readOnly: true,
-      notify: true
-    }
-  },
-
+class StatusMessage {
   /**
-   * Associates status message to the `code`.
-   * Don't call this method after setting the `code` property. It will be called
-   * automatically.
+   * Translates status code into status message.
+   *
+   * @param {Number|String} code Status code
+   * @return {String|undefined} Status text if the code is recognized.
    */
-  setMessage: function() {
-    var code = this.code;
+  getMessage(code) {
     code = Number(code);
-    var message;
+    let message;
     switch (code) {
       case 0:
         message = 'Request error';
@@ -177,7 +140,6 @@ Polymer({
         message = 'HTTP Version Not Supported';
         break;
     }
-    return this._setMessage(message);
+    return message;
   }
-});
-</script>
+}

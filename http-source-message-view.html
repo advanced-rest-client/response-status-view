@@ -1,6 +1,6 @@
 <!--
 @license
-Copyright 2016 The Advanced REST client authors <arc@mulesoft.com>
+Copyright 2018 The Advanced REST client authors <arc@mulesoft.com>
 Licensed under the Apache License, Version 2.0 (the "License"); you may not
 use this file except in compliance with the License. You may obtain a copy of
 the License at
@@ -11,16 +11,11 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 -->
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../paper-styles/paper-styles.html">
+<link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="../arc-icons/arc-icons.html">
-<!--
-`http-source-message-view` displays the HTTP source message that has been sent
-to the remote mchine.
--->
 <dom-module id="http-source-message-view">
   <template>
     <style>
@@ -28,15 +23,15 @@ to the remote mchine.
       margin: 16px 16px 0 16px;
       overflow: auto;
       display: block;
-      @apply(--http-source-message-view);
+      @apply --http-source-message-view;
     }
 
     pre {
       word-break: break-all;
-      @apply(--arc-font-code1);
+      @apply --arc-font-code1;
       -webkit-user-select: text;
       cursor: text;
-      @apply(--http-source-message);
+      @apply --http-source-message;
       margin-bottom: 0;
     }
 
@@ -55,23 +50,39 @@ to the remote mchine.
     </iron-collapse>
   </template>
   <script>
-  Polymer({
-    is: 'http-source-message-view',
-
-    properties: {
-      // A HTTP message to display.
-      message: String,
-      // True if the message is visible.
-      opened: Boolean
-    },
-
-    toggle: function() {
-      this.$.collapse.toggle();
-    },
-
-    _computeIcon: function(opened) {
+  /**
+   * The element displays the HTTP source message that has been sent to the remote mchine.
+   *
+   * @customElement
+   * @polymer
+   * @demo demo/index.html
+   * @memberof ApiElements
+   */
+  class HttpSourceMessageView extends Polymer.Element {
+    static get is() { return 'http-source-message-view'; }
+    static get properties() {
+      return {
+        // A HTTP message to display.
+        message: String,
+        // True if the message is visible.
+        opened: Boolean
+      };
+    }
+    /**
+     * Toggles source message visibility
+     */
+    toggle() {
+      this.opened = !this.opened;
+    }
+    /**
+     * Computes icon name depending on `opened` state
+     * @param {Boolean} opened
+     * @return {String}
+     */
+    _computeIcon(opened) {
       return opened ? 'arc:expand-less' : 'arc:expand-more';
     }
-  });
+  }
+  window.customElements.define(HttpSourceMessageView.is, HttpSourceMessageView);
   </script>
 </dom-module>
