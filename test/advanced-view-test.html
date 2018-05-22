@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../iron-test-helpers/mock-interactions.js"></script>
+    <link rel="import" href="../response-status-view.html">
+  </head>
+  <body>
+
+    <test-fixture id="basic">
+      <template>
+        <response-status-view></response-status-view>
+      </template>
+    </test-fixture>
+
+    <script>
+    suite('Basic', () => {
+      let element;
+      setup(() => {
+        element = fixture('basic');
+      });
+
+      test('Renders all tabs', (done) => {
+        flush(() => {
+          const tabs = element.shadowRoot.querySelectorAll('paper-tab');
+          assert.equal(tabs.length, 4);
+          done();
+        });
+      });
+
+      test('Redirects panel is rendered', (done) => {
+        flush(() => {
+          const panel = element.shadowRoot.querySelector('response-redirects-panel');
+          assert.ok(panel);
+          done();
+        });
+      });
+
+      test('Timings panel is rendered', (done) => {
+        flush(() => {
+          const panel = element.shadowRoot.querySelector('request-timings-panel');
+          assert.ok(panel);
+          done();
+        });
+      });
+    });
+    </script>
+
+  </body>
+</html>
