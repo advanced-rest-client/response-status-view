@@ -1,7 +1,7 @@
 {
   "name": "response-status-view",
   "description": "HTTP response status view, including status, headers redirects and timings",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "license": "Apache-2.0",
   "authors": [
     "Pawel Psztyc",
