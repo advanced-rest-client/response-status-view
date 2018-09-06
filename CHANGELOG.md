@@ -1,3 +1,14 @@
+<a name="2.0.1"></a>
+## [2.0.1](https://github.com/advanced-rest-client/response-status-view/compare/0.1.17...2.0.1) (2018-09-06)
+
+
+### Update
+
+* Publishing stable release with Polymer 2 support ([16bedaca34d43de84fbe4d06c31d0791df4a46ba](https://github.com/advanced-rest-client/response-status-view/commit/16bedaca34d43de84fbe4d06c31d0791df4a46ba))
+* Updated Travis configuration to connect to Sauce Labs. ([503aab82359756a1feb0b4598a06b111722a3b3f](https://github.com/advanced-rest-client/response-status-view/commit/503aab82359756a1feb0b4598a06b111722a3b3f))
+
+
+
 <a name="2.0.0"></a>
 # [2.0.0](https://github.com/advanced-rest-client/response-status-view/compare/0.1.17...2.0.0) (2018-05-22)
 
