@@ -1,10 +1,10 @@
 {
   "name": "@advanced-rest-client/response-status-view",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "license": "Apache-2.0",
   "description": "HTTP response status view, including status, headers redirects and timings",
   "devDependencies": {
-    "@polymer/gen-typescript-declarations": "^1.1.1"
+    "@polymer/gen-typescript-declarations": "^1.5.1"
   },
   "private": false,
   "main": "response-status-view.html",

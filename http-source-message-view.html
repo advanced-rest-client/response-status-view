@@ -28,9 +28,8 @@ the License.
 
     pre {
       word-break: break-all;
+      @apply --select-text;
       @apply --arc-font-code1;
-      -webkit-user-select: text;
-      cursor: text;
       @apply --http-source-message;
       margin-bottom: 0;
     }
@@ -39,6 +38,7 @@ the License.
       margin: 0;
       display: inline-block;
       cursor: pointer;
+      @apply --http-source-message-view-title;
     }
     </style>
     <h5 on-tap="toggle">

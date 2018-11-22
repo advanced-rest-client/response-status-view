@@ -5,8 +5,8 @@
  *   https://github.com/Polymer/tools/tree/master/packages/gen-typescript-declarations
  *
  * To modify these typings, edit the source file(s):
- *   index.html
+ *   response-status-styles.html
  */
 
-/// <reference path="../iron-component-page/iron-component-page.d.ts" />
+/// <reference path="../polymer/types/polymer-element.d.ts" />
 
