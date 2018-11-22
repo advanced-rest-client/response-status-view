@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "description": "HTTP response status view, including status, headers redirects and timings",
   "devDependencies": {
-    "@polymer/gen-typescript-declarations": "^1.1.1"
+    "@polymer/gen-typescript-declarations": "^1.5.1"
   },
   "private": false,
   "main": "response-status-view.html",
