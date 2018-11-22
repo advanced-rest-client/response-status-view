@@ -34,6 +34,11 @@ the License.
     .redirect-location {
       margin-left: 8px;
     }
+
+    .auto-link {
+      color: var(--arc-link);
+      @apply --arc-link;
+    }
     </style>
     <template is="dom-if" if="[[!hasRedirects]]">
       <div class="no-info-container">
@@ -69,7 +74,9 @@ the License.
    * @appliesMixin ArcBehaviors.ResponseStatusMixin
    */
   class ResponseRedirectsPanel extends ArcBehaviors.ResponseStatusMixin(Polymer.Element) {
-    static get is() { return 'response-redirects-panel'; }
+    static get is() {
+      return 'response-redirects-panel';
+    }
     static get properties() {
       return {
         /**
