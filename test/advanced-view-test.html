@@ -3,27 +3,35 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="../../web-component-tester/browser.js"></script>
-    <script src="../../iron-test-helpers/mock-interactions.js"></script>
-    <link rel="import" href="../response-status-view.html">
+
+    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="../node_modules/@polymer/test-fixture/test-fixture.js"></script>
+    <script src="../node_modules/mocha/mocha.js"></script>
+    <script src="../node_modules/chai/chai.js"></script>
+    <script src="../node_modules/wct-mocha/wct-mocha.js"></script>
+    <script src="../node_modules/sinon/pkg/sinon.js"></script>
+
   </head>
   <body>
 
-    <test-fixture id="basic">
+    <test-fixture id="Basic">
       <template>
         <response-status-view></response-status-view>
       </template>
     </test-fixture>
 
-    <script>
-    suite('Basic', () => {
-      let element;
-      setup(() => {
-        element = fixture('basic');
-      });
+    <test-fixture id="StatusCode">
+      <template>
+        <response-status-view status-code="200"></response-status-view>
+      </template>
+    </test-fixture>
 
+    <script type="module">
+    import '../response-status-view.js';
+    import {StatusMessage} from '../response-status-view.js';
+    suite('Basic', () => {
       test('Renders all tabs', (done) => {
+        const element = fixture('Basic');
         flush(() => {
           const tabs = element.shadowRoot.querySelectorAll('paper-tab');
           assert.equal(tabs.length, 4);
@@ -32,6 +40,7 @@
       });
 
       test('Redirects panel is rendered', (done) => {
+        const element = fixture('Basic');
         flush(() => {
           const panel = element.shadowRoot.querySelector('response-redirects-panel');
           assert.ok(panel);
@@ -40,10 +49,94 @@
       });
 
       test('Timings panel is rendered', (done) => {
+        const element = fixture('Basic');
         flush(() => {
           const panel = element.shadowRoot.querySelector('request-timings-panel');
           assert.ok(panel);
           done();
+        });
+      });
+
+      test('Sets status message from the code', (done) => {
+        const element = fixture('StatusCode');
+        setTimeout(() => {
+          assert.equal(element.statusMessage, 'OK');
+          done();
+        });
+      });
+    });
+
+    suite('_statusCodeChanged()', () => {
+      let element;
+      setup(() => {
+        element = fixture('Basic');
+      });
+
+      test('Sets default status code when missing', () => {
+        element.statusCode = undefined;
+        element._statusCodeChanged();
+        assert.equal(element.statusCode, 0);
+      });
+
+      test('Calls assignStatusMessage()', (done) => {
+        element.statusCode = 200;
+        const spy = sinon.spy(element, 'assignStatusMessage');
+        element._statusCodeChanged(200);
+        setTimeout(() => {
+          assert.isTrue(spy.called);
+          done();
+        });
+      });
+    });
+
+    suite('StatusMessage', () => {
+      [
+        [0, 'Request error'],
+        [100, 'Continue'],
+        [101, 'Switching Protocols'],
+        [200, 'OK'],
+        [201, 'Created'],
+        [202, 'Accepted'],
+        [203, 'Non-Authoritative Information'],
+        [204, 'No Content'],
+        [205, 'Reset Content'],
+        [206, 'Partial Content'],
+        [300, 'Multiple Choices'],
+        [301, 'Moved Permanently'],
+        [302, 'Found'],
+        [303, 'See Other'],
+        [304, 'Not Modified'],
+        [305, 'Use Proxy'],
+        [306, '(Unused)'],
+        [307, 'Temporary Redirect'],
+        [400, 'Bad Request'],
+        [401, 'Unauthorized'],
+        [402, 'Payment Required'],
+        [403, 'Forbidden'],
+        [404, 'Not Found'],
+        [405, 'Method Not Allowed'],
+        [406, 'Not Acceptable'],
+        [407, 'Proxy Authentication Required'],
+        [408, 'Request Timeout'],
+        [409, 'Conflict'],
+        [410, 'Gone'],
+        [411, 'Length Required'],
+        [412, 'Precondition Failed'],
+        [413, 'Request Entity Too Large'],
+        [414, 'Request-URI Too Long'],
+        [415, 'Unsupported Media Type'],
+        [416, 'Requested Range Not Satisfiable'],
+        [417, 'Expectation Failed'],
+        [500, 'Internal Server Error'],
+        [501, 'Not Implemented'],
+        [502, 'Bad Gateway'],
+        [503, 'Service Unavailable'],
+        [504, 'Gateway Timeout'],
+        [505, 'HTTP Version Not Supported']
+      ].forEach((item) => {
+        test(`Returns message for ${item[0]}`, () => {
+          const result = StatusMessage.getMessage(item[0]);
+          assert.equal(result, item[1]);
         });
       });
     });

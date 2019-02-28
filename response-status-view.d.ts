@@ -5,26 +5,35 @@
  *   https://github.com/Polymer/tools/tree/master/packages/gen-typescript-declarations
  *
  * To modify these typings, edit the source file(s):
- *   response-status-view.html
+ *   response-status-view.js
  */
 
-/// <reference path="../polymer/types/polymer-element.d.ts" />
-/// <reference path="../polymer/types/lib/elements/dom-if.d.ts" />
-/// <reference path="../polymer/types/lib/elements/dom-repeat.d.ts" />
-/// <reference path="../iron-flex-layout/iron-flex-layout.d.ts" />
-/// <reference path="../paper-tabs/paper-tabs.d.ts" />
-/// <reference path="../paper-tabs/paper-tab.d.ts" />
-/// <reference path="../iron-pages/iron-pages.d.ts" />
-/// <reference path="../request-timings/request-timings-panel.d.ts" />
-/// <reference path="../headers-list-view/headers-list-view.d.ts" />
-/// <reference path="../iron-collapse/iron-collapse.d.ts" />
-/// <reference path="../paper-button/paper-button.d.ts" />
-/// <reference path="../iron-icon/iron-icon.d.ts" />
-/// <reference path="../arc-icons/arc-icons.d.ts" />
-/// <reference path="http-source-message-view.d.ts" />
-/// <reference path="response-redirects-panel.d.ts" />
-/// <reference path="response-status-mixin.d.ts" />
-/// <reference path="response-status-styles.d.ts" />
+
+// tslint:disable:variable-name Describing an API that's defined elsewhere.
+// tslint:disable:no-any describes the API as best we are able today
+
+import {PolymerElement} from '@polymer/polymer/polymer-element.js';
+
+import {html} from '@polymer/polymer/lib/utils/html-tag.js';
+
+import {ResponseStatusMixin} from './response-status-mixin.js';
+
+export {StatusMessage};
+
+/**
+ * A class that reads response status code and returns default HTTP status
+ * message associated with it.
+ */
+declare class StatusMessage {
+
+  /**
+   * Translates status code into status message.
+   *
+   * @param code Status code
+   * @returns Status text if the code is recognized.
+   */
+  static getMessage(code: Number|String|null): String|null|undefined;
+}
 
 declare namespace ApiElements {
 
@@ -128,7 +137,7 @@ declare namespace ApiElements {
    * with this element.
    */
   class ResponseStatusView extends
-    ArcBehaviors.ResponseStatusMixin(
+    ResponseStatusMixin(
     Object) {
 
     /**
@@ -238,8 +247,8 @@ declare namespace ApiElements {
      * A HTTP method used to make a request
      */
     requestMethod: string|null|undefined;
-    attached(): void;
-    _statusCodeChanged(): void;
+    connectedCallback(): void;
+    _statusCodeChanged(value: any): void;
 
     /**
      * Computes value for `isError` property.
@@ -288,7 +297,7 @@ declare namespace ApiElements {
 
     /**
      * Runs status text recognition after ~100 ms to ensure a status message
-     * is displayed event if there wasn't any.
+     * is displayed even if there wasn't any.
      */
     assignStatusMessage(): void;
 
@@ -311,6 +320,9 @@ declare namespace ApiElements {
   }
 }
 
-interface HTMLElementTagNameMap {
-  "response-status-view": ApiElements.ResponseStatusView;
+declare global {
+
+  interface HTMLElementTagNameMap {
+    "response-status-view": ApiElements.ResponseStatusView;
+  }
 }

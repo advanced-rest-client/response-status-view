@@ -5,21 +5,22 @@
  *   https://github.com/Polymer/tools/tree/master/packages/gen-typescript-declarations
  *
  * To modify these typings, edit the source file(s):
- *   http-source-message-view.html
+ *   http-source-message-view.js
  */
 
-/// <reference path="../polymer/types/polymer-element.d.ts" />
-/// <reference path="../iron-flex-layout/iron-flex-layout.d.ts" />
-/// <reference path="../paper-icon-button/paper-icon-button.d.ts" />
-/// <reference path="../iron-collapse/iron-collapse.d.ts" />
-/// <reference path="../arc-icons/arc-icons.d.ts" />
+
+// tslint:disable:variable-name Describing an API that's defined elsewhere.
+
+import {PolymerElement} from '@polymer/polymer/polymer-element.js';
+
+import {html} from '@polymer/polymer/lib/utils/html-tag.js';
 
 declare namespace ApiElements {
 
   /**
    * The element displays the HTTP source message that has been sent to the remote mchine.
    */
-  class HttpSourceMessageView extends Polymer.Element {
+  class HttpSourceMessageView extends PolymerElement {
 
     /**
      * A HTTP message to display.
@@ -43,6 +44,9 @@ declare namespace ApiElements {
   }
 }
 
-interface HTMLElementTagNameMap {
-  "http-source-message-view": ApiElements.HttpSourceMessageView;
+declare global {
+
+  interface HTMLElementTagNameMap {
+    "http-source-message-view": ApiElements.HttpSourceMessageView;
+  }
 }

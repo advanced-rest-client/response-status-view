@@ -5,16 +5,18 @@
  *   https://github.com/Polymer/tools/tree/master/packages/gen-typescript-declarations
  *
  * To modify these typings, edit the source file(s):
- *   response-redirects-panel.html
+ *   response-redirects-panel.js
  */
 
-/// <reference path="../polymer/types/polymer-element.d.ts" />
-/// <reference path="../polymer/types/lib/elements/dom-if.d.ts" />
-/// <reference path="../polymer/types/lib/elements/dom-repeat.d.ts" />
-/// <reference path="../iron-flex-layout/iron-flex-layout.d.ts" />
-/// <reference path="../headers-list-view/headers-list-view.d.ts" />
-/// <reference path="response-status-mixin.d.ts" />
-/// <reference path="response-status-styles.d.ts" />
+
+// tslint:disable:variable-name Describing an API that's defined elsewhere.
+// tslint:disable:no-any describes the API as best we are able today
+
+import {PolymerElement} from '@polymer/polymer/polymer-element.js';
+
+import {html} from '@polymer/polymer/lib/utils/html-tag.js';
+
+import {ResponseStatusMixin} from './response-status-mixin.js';
 
 declare namespace ApiElements {
 
@@ -23,7 +25,7 @@ declare namespace ApiElements {
    * Renders list of redirects and headers in the response.
    */
   class ResponseRedirectsPanel extends
-    ArcBehaviors.ResponseStatusMixin(
+    ResponseStatusMixin(
     Object) {
 
     /**
@@ -53,6 +55,9 @@ declare namespace ApiElements {
   }
 }
 
-interface HTMLElementTagNameMap {
-  "response-redirects-panel": ApiElements.ResponseRedirectsPanel;
+declare global {
+
+  interface HTMLElementTagNameMap {
+    "response-redirects-panel": ApiElements.ResponseRedirectsPanel;
+  }
 }

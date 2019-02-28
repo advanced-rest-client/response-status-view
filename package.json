@@ -1,13 +1,34 @@
 {
-  "name": "@advanced-rest-client/response-status-view",
-  "version": "2.0.2",
-  "license": "Apache-2.0",
   "description": "HTTP response status view, including status, headers redirects and timings",
-  "devDependencies": {
-    "@polymer/gen-typescript-declarations": "^1.5.1"
+  "keywords": [
+    "web-components",
+    "polymer",
+    "response",
+    "status",
+    "view"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/advanced-rest-client/response-status-view.git"
   },
-  "private": false,
-  "main": "response-status-view.html",
+  "name": "@advanced-rest-client/response-status-view",
+  "version": "3.0.0-preview.1",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@advanced-rest-client/arc-definitions": "^3.0.0-preview.1",
+    "@polymer/gen-typescript-declarations": "^1.6.1",
+    "@polymer/iron-component-page": "^4.0.0",
+    "@polymer/iron-demo-helpers": "^3.0.0",
+    "@polymer/iron-test-helpers": "^3.0.0",
+    "@polymer/paper-input": "^3.0.0",
+    "@polymer/test-fixture": "^4.0.2",
+    "@webcomponents/webcomponentsjs": "^2.0.0",
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "sinon": "^7.2.3",
+    "wct-mocha": "^1.0.0"
+  },
+  "main": "response-status-view.js",
   "authors": [
     "Pawel Psztyc",
     "The Advanced REST client authors <arc@mulesoft.com>"
@@ -18,12 +39,26 @@
     "test": "polymer test --plugin local",
     "update-types": "gen-typescript-declarations --deleteExisting --outDir ."
   },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/advanced-rest-client/response-status-view.git"
-  },
   "bugs": {
     "url": "https://github.com/advanced-rest-client/response-status-view/issues",
     "email": "arc@mulesoft.com"
+  },
+  "contributors": [
+    "Pawel Psztyc",
+    "The Advanced REST client authors <arc@mulesoft.com>"
+  ],
+  "dependencies": {
+    "@advanced-rest-client/arc-icons": "^3.0.0-preview.1",
+    "@advanced-rest-client/headers-list-view": "^3.0.0-preview.1",
+    "@advanced-rest-client/request-timings": "^3.0.0-preview.1",
+    "@polymer/iron-collapse": "^3.0.0",
+    "@polymer/iron-flex-layout": "^3.0.0",
+    "@polymer/iron-icon": "^3.0.0",
+    "@polymer/iron-pages": "^3.0.0",
+    "@polymer/paper-button": "^3.0.0",
+    "@polymer/paper-checkbox": "^3.0.0",
+    "@polymer/paper-icon-button": "^3.0.0",
+    "@polymer/paper-tabs": "^3.0.0",
+    "@polymer/polymer": "^3.0.0"
   }
 }

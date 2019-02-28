@@ -1,4 +1,4 @@
-<!--
+/**
 @license
 Copyright 2018 The Advanced REST client authors <arc@mulesoft.com>
 Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -10,9 +10,10 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
 WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
--->
-<link rel="import" href="../polymer/polymer-element.html">
-<dom-module id="response-status-styles">
+*/
+import '@polymer/polymer/polymer-element.js';
+const $documentContainer = document.createElement('template');
+$documentContainer.innerHTML = `<dom-module id="response-status-styles">
   <template>
     <style>
     .status-row {
@@ -76,4 +77,6 @@ the License.
     }
     </style>
   </template>
-</dom-module>
+</dom-module>`;
+
+document.head.appendChild($documentContainer.content);
