@@ -11,12 +11,12 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 */
-import {PolymerElement} from '@polymer/polymer/polymer-element.js';
-import {html} from '@polymer/polymer/lib/utils/html-tag.js';
-import '@polymer/iron-flex-layout/iron-flex-layout.js';
-import '@polymer/paper-icon-button/paper-icon-button.js';
-import '@polymer/iron-collapse/iron-collapse.js';
-import '@advanced-rest-client/arc-icons/arc-icons.js';
+import {PolymerElement} from '../../@polymer/polymer/polymer-element.js';
+import {html} from '../../@polymer/polymer/lib/utils/html-tag.js';
+import '../../@polymer/iron-flex-layout/iron-flex-layout.js';
+import '../../@polymer/paper-icon-button/paper-icon-button.js';
+import '../../@polymer/iron-collapse/iron-collapse.js';
+import '../../@advanced-rest-client/arc-icons/arc-icons.js';
 /**
  * The element displays the HTTP source message that has been sent to the remote mchine.
  *

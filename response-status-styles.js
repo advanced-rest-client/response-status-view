@@ -11,7 +11,7 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 */
-import '@polymer/polymer/polymer-element.js';
+import '../../@polymer/polymer/polymer-element.js';
 const $documentContainer = document.createElement('template');
 $documentContainer.innerHTML = `<dom-module id="response-status-styles">
   <template>
