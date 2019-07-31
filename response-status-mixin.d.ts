@@ -10,41 +10,5 @@
 
 
 // tslint:disable:variable-name Describing an API that's defined elsewhere.
-// tslint:disable:no-any describes the API as best we are able today
-
-import {dedupingMixin} from '@polymer/polymer/lib/utils/mixin.js';
 
 export {ResponseStatusMixin};
-
-declare namespace ArcBehaviors {
-
-
-  /**
-   * Common function for response status view
-   */
-  function ResponseStatusMixin<T extends new (...args: any[]) => {}>(base: T): T & ResponseStatusMixinConstructor;
-
-  interface ResponseStatusMixinConstructor {
-    new(...args: any[]): ResponseStatusMixin;
-  }
-
-  interface ResponseStatusMixin {
-
-    /**
-     * Comnputes CSS class name depending on response status code.
-     *
-     * @param code Status code
-     * @returns Css class name for status code.
-     */
-    _computeStatusClass(code: Number|null): String|null;
-
-    /**
-     * Click event listener to recognize click on a `link` element.
-     * Dispatches `action-link-change` custom event when event's source is
-     * an anchor.
-     */
-    _handleLink(e: ClickEvent|null): void;
-  }
-}
-
-export {ResponseStatusMixinConstructor};

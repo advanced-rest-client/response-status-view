@@ -11,60 +11,52 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 */
-import {dedupingMixin} from '../../@polymer/polymer/lib/utils/mixin.js';
 /**
  * Common function for response status view
  *
- * @polymer
  * @mixinFunction
- * @memberof ArcBehaviors
+ * @memberof UiElements
+ * @param {Function} base
+ * @return {Function}
  */
-export const ResponseStatusMixin = dedupingMixin((base) => {
+export const ResponseStatusMixin = (base) => class extends base {
   /**
-   * @polymer
-   * @mixinClass
+   * Comnputes CSS class name depending on response status code.
+   * @param {Number} code Status code
+   * @return {String} Css class name for status code.
    */
-  class RSmixin extends base {
-    /**
-     * Comnputes CSS class name depending on response status code.
-     * @param {Number} code Status code
-     * @return {String} Css class name for status code.
-     */
-    _computeStatusClass(code) {
-      let cls = 'status-code-value';
-      if (code >= 500 || code === 0) {
-        cls += ' error';
-      }
-      if (code >= 400 && code < 500) {
-        cls += ' warning';
-      }
-      if (code >= 300 && code < 400) {
-        cls += ' info';
-      }
-      return cls;
+  _computeStatusClass(code) {
+    let cls = 'status-code-value';
+    if (code >= 500 || code === 0) {
+      cls += ' error';
     }
-
-    /**
-     * Click event listener to recognize click on a `link` element.
-     * Dispatches `action-link-change` custom event when event's source is
-     * an anchor.
-     * @param {ClickEvent} e
-     */
-    _handleLink(e) {
-      e.preventDefault();
-      const path = e.composedPath();
-      if (path[0].nodeName === 'A') {
-        const ev = new CustomEvent('action-link-change', {
-          detail: {
-            url: path[0].href
-          },
-          bubbles: true,
-          composed: true,
-          cancelable: true
-        });
-        this.dispatchEvent(ev);
-      }
+    if (code >= 400 && code < 500) {
+      cls += ' warning';
+    }
+    if (code >= 300 && code < 400) {
+      cls += ' info';
+    }
+    return cls;
+  }
+  /**
+   * Click event listener to recognize click on a `link` element.
+   * Dispatches `action-link-change` custom event when event's source is
+   * an anchor.
+   * @param {ClickEvent} e
+   */
+  _handleLink(e) {
+    e.preventDefault();
+    const path = e.composedPath();
+    if (path[0] && path[0].nodeName === 'A') {
+      const ev = new CustomEvent('action-link-change', {
+        detail: {
+          url: path[0].href
+        },
+        bubbles: true,
+        composed: true,
+        cancelable: true
+      });
+      this.dispatchEvent(ev);
     }
   }
-return RSmixin;
-});
+};

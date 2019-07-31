@@ -11,72 +11,73 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 */
-import '../../@polymer/polymer/polymer-element.js';
-const $documentContainer = document.createElement('template');
-$documentContainer.innerHTML = `<dom-module id="response-status-styles">
-  <template>
-    <style>
-    .status-row {
-      @apply --layout-horizontal;
-      @apply --arc-font-subhead;
-      @apply --layout-center;
-      min-height: 56px;
-      border-bottom: 1px var(--response-status-view-status-info-border-color, #e5e5e5) solid;
-    }
+import { css } from 'lit-element';
+export default css`
+.status-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: var(--arc-font-subhead-font-size);
+  font-weight: var(--arc-font-subhead-font-weight);
+  line-height: var(--arc-font-subhead-line-height);
+  min-height: 56px;
+  padding: 20px 0;
+}
 
-    .status-value {
-      @apply --layout-flex;
-      @apply --layout-horizontal;
-      @apply --layout-center;
-      @apply --response-status-view-status-container;
-    }
+:host([narrow]) .status-row {
+  align-items: start;
+  flex-direction: column;
+}
 
-    .status-value > span {
-      display: block;
-    }
+.status-value {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+}
 
-    .status-value.status.text > span:not(:first-child) {
-      margin-left: 8px;
-    }
+.status-value > span {
+  display: block;
+}
 
-    .text {
-      @apply --select-text;
-    }
+.status-value.status.text > span:not(:first-child) {
+  margin-left: 8px;
+}
 
-    headers-list-view {
-      margin-top: 12px;
-    }
+.text {
+  user-select: text;
+}
 
-    .status-code-value {
-      padding: 4px 8px;
-      color: var(--response-status-view-code-value-color, #fff);
-      border-radius: 3px;
-      display: block;
-      background-color: var(--arc-status-code-color-200, rgba(56, 142, 60, 1));
-    }
+headers-list-view {
+  margin-top: 12px;
+}
 
-    .info.status-code-value {
-      background-color: var(--arc-status-code-color-300, rgba(48, 63, 159, 1));
-    }
+.status-code-value {
+  padding: 4px 8px;
+  color: var(--response-status-view-code-value-color, #fff);
+  border-radius: 3px;
+  display: block;
+  background-color: var(--arc-status-code-color-200, rgb(36, 107, 39));
+}
 
-    .warning.status-code-value {
-      background-color: var(--arc-status-code-color-400, rgba(245, 124, 0, 1));
-    }
+.info.status-code-value {
+  background-color: var(--arc-status-code-color-300, rgb(48, 63, 159));
+}
 
-    .error.status-code-value {
-      background-color: var(--arc-status-code-color-500, rgba(211, 47, 47, 1));
-    }
+.warning.status-code-value {
+  background-color: var(--arc-status-code-color-400, rgb(171, 86, 0));
+}
 
-    .no-info-container {
-      @apply --layout-vertical;
-      @apply --layout-center;
-    }
+.error.status-code-value {
+  background-color: var(--arc-status-code-color-500, rgb(211, 47, 47));
+}
 
-    .no-info {
-      @apply --no-info-message;
-    }
-    </style>
-  </template>
-</dom-module>`;
+.no-info-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-document.head.appendChild($documentContainer.content);
+.no-info {
+  font-style: italic;
+}`;

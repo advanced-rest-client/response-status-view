@@ -10,17 +10,21 @@
 
 
 // tslint:disable:variable-name Describing an API that's defined elsewhere.
+// tslint:disable:no-any describes the API as best we are able today
 
-import {PolymerElement} from '@polymer/polymer/polymer-element.js';
+import {LitElement, html, css} from 'lit-element';
 
-import {html} from '@polymer/polymer/lib/utils/html-tag.js';
-
-declare namespace ApiElements {
+declare namespace UiElements {
 
   /**
    * The element displays the HTTP source message that has been sent to the remote mchine.
    */
-  class HttpSourceMessageView extends PolymerElement {
+  class HttpSourceMessageView extends LitElement {
+
+    /**
+     * True if the message is visible.
+     */
+    opened: boolean|null|undefined;
 
     /**
      * A HTTP message to display.
@@ -28,9 +32,14 @@ declare namespace ApiElements {
     message: string|null|undefined;
 
     /**
-     * True if the message is visible.
+     * Icon prefix from the svg icon set. This can be used to replace the set
+     * without changing the icon.
+     *
+     * Defaults to `arc`.
      */
-    opened: boolean|null|undefined;
+    iconPrefix: string|null|undefined;
+    constructor();
+    render(): any;
 
     /**
      * Toggles source message visibility
@@ -47,6 +56,6 @@ declare namespace ApiElements {
 declare global {
 
   interface HTMLElementTagNameMap {
-    "http-source-message-view": ApiElements.HttpSourceMessageView;
+    "http-source-message-view": UiElements.HttpSourceMessageView;
   }
 }

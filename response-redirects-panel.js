@@ -11,70 +11,73 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 */
-import {PolymerElement} from '../../@polymer/polymer/polymer-element.js';
-import {html} from '../../@polymer/polymer/lib/utils/html-tag.js';
-import '../../@polymer/polymer/lib/elements/dom-if.js';
-import '../../@polymer/polymer/lib/elements/dom-repeat.js';
-import '../../@polymer/iron-flex-layout/iron-flex-layout.js';
-import '../../@advanced-rest-client/headers-list-view/headers-list-view.js';
-import {ResponseStatusMixin} from './response-status-mixin.js';
-import './response-status-styles.js';
-/* eslint-disable max-len */
+import { LitElement, html, css } from 'lit-element';
+import '@advanced-rest-client/headers-list-view/headers-list-view.js';
+import { ResponseStatusMixin } from './response-status-mixin.js';
+import statusStyles from './response-status-styles.js';
 /**
  * HTTP redirects info panel.
  * Renders list of redirects and headers in the response.
  *
  * @customElement
- * @polymer
  * @demo demo/index.html
- * @memberof ApiElements
+ * @memberof UiElements
  * @appliesMixin ResponseStatusMixin
  */
-class ResponseRedirectsPanel extends ResponseStatusMixin(PolymerElement) {
-  static get template() {
-    return html`
-    <style include="response-status-styles">
-    .status-label {
-      width: 40px;
-      @apply --arc-font-subhead;
-    }
+class ResponseRedirectsPanel extends ResponseStatusMixin(LitElement) {
+  static get styles() {
+    return [
+      statusStyles,
+      css`.status-label {
+        width: 40px;
+        font-size: var(--arc-font-subhead-font-size);
+        font-weight: var(--arc-font-subhead-font-weight);
+        line-height: var(--arc-font-subhead-line-height);
+      }
 
-    .redirect-value {
-      margin-top: 12px;
-      @apply --layout-flex;
-    }
+      .redirect-value {
+        margin-top: 12px;
+        flex: 1;
+      }
 
-    .redirect-location {
-      margin-left: 8px;
-    }
+      .redirect-location {
+        margin-left: 8px;
+      }
 
-    .auto-link {
-      color: var(--arc-link);
-      @apply --arc-link;
-    }
-    </style>
-    <template is="dom-if" if="[[!hasRedirects]]">
-      <div class="no-info-container">
-        <p class="no-info">There is no redirects information to display</p>
+      .auto-link {
+        color: var(--link-color);
+      }`
+    ];
+  }
+
+  _listItemTemplate(item, index) {
+    const loc = this._computeRedirectLocation(item.headers);
+    return html`<div class="status-label text">
+      #<span>${index + 1}</span>
+    </div>
+    <div class="redirect-value" @click="${this._handleLink}">
+      <div class="status-value status text">
+        <span class="${this._computeStatusClass(item.status)}">${item.status} ${item.statusText}</span>
+        <span class="redirect-location">
+          to: <a href="${loc}" class="auto-link">${loc}</a></span>
       </div>
-    </template>
-    <template is="dom-if" if="[[hasRedirects]]">
-      <template is="dom-repeat" items="[[redirects]]">
-        <div class="status-row">
-          <div class="status-label text">
-            #<span>[[_computeIndexName(index)]]</span>
-          </div>
-          <div class="redirect-value" on-tap="_handleLink">
-            <div class="status-value status text">
-              <span class\$="[[_computeStatusClass(item.status)]]">[[item.status]] [[item.statusText]]</span>
-              <span class="redirect-location">to: <a href="[[_computeRedirectLocation(item.headers)]]" class="auto-link">[[_computeRedirectLocation(item.headers)]]</a></span>
-            </div>
-            <headers-list-view headers="[[item.headers]]"></headers-list-view>
-          </div>
-        </div>
-      </template>
-    </template>
-`;
+      <headers-list-view .headers="${item.headers}"></headers-list-view>
+    </div>`;
+  }
+
+  render() {
+    const { redirects } = this;
+    const hasRedirects = !!(redirects && redirects.length);
+    return html`
+    ${hasRedirects ?
+      redirects.map((item, index) =>
+        html`<div class="status-row">
+          ${this._listItemTemplate(item, index)}
+          </div>`) :
+      html`<div class="no-info-container">
+          <p class="no-info">There is no redirects information to display</p>
+        </div>`}
+    `;
   }
 
   static get properties() {
@@ -82,25 +85,8 @@ class ResponseRedirectsPanel extends ResponseStatusMixin(PolymerElement) {
       /**
        * List of redirects information.
        */
-      redirects: Array,
-      /**
-       * Computed value, `true` when `redirects` property is set and has value
-       */
-      hasRedirects: {
-        type: Boolean,
-        value: false,
-        computed: '_computeHasRedirects(redirects.*)'
-      }
+      redirects: { type: Array }
     };
-  }
-
-  /**
-   * Computes 0-based index to 1-based number.
-   * @param {Number} index
-   * @return {Number}
-   */
-  _computeIndexName(index) {
-    return index + 1;
   }
   /**
    * Extracts a location URL form the headers.
@@ -110,7 +96,7 @@ class ResponseRedirectsPanel extends ResponseStatusMixin(PolymerElement) {
    * found.
    */
   _computeRedirectLocation(headers) {
-    let def = 'unknown';
+    const def = 'unknown';
     if (!headers) {
       return def;
     }
@@ -123,10 +109,6 @@ class ResponseRedirectsPanel extends ResponseStatusMixin(PolymerElement) {
     }
     const location = headers.get('location');
     return location || def;
-  }
-
-  _computeHasRedirects(record) {
-    return !!(record && record.base && record.base.length);
   }
 }
 window.customElements.define('response-redirects-panel', ResponseRedirectsPanel);

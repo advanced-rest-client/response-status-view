@@ -12,13 +12,11 @@
 // tslint:disable:variable-name Describing an API that's defined elsewhere.
 // tslint:disable:no-any describes the API as best we are able today
 
-import {PolymerElement} from '@polymer/polymer/polymer-element.js';
-
-import {html} from '@polymer/polymer/lib/utils/html-tag.js';
+import {LitElement, html, css} from 'lit-element';
 
 import {ResponseStatusMixin} from './response-status-mixin.js';
 
-declare namespace ApiElements {
+declare namespace UiElements {
 
   /**
    * HTTP redirects info panel.
@@ -32,16 +30,8 @@ declare namespace ApiElements {
      * List of redirects information.
      */
     redirects: any[]|null|undefined;
-
-    /**
-     * Computed value, `true` when `redirects` property is set and has value
-     */
-    readonly hasRedirects: boolean|null|undefined;
-
-    /**
-     * Computes 0-based index to 1-based number.
-     */
-    _computeIndexName(index: Number|null): Number|null;
+    _listItemTemplate(item: any, index: any): any;
+    render(): any;
 
     /**
      * Extracts a location URL form the headers.
@@ -51,13 +41,12 @@ declare namespace ApiElements {
      * found.
      */
     _computeRedirectLocation(headers: String|null): String|null;
-    _computeHasRedirects(record: any): any;
   }
 }
 
 declare global {
 
   interface HTMLElementTagNameMap {
-    "response-redirects-panel": ApiElements.ResponseRedirectsPanel;
+    "response-redirects-panel": UiElements.ResponseRedirectsPanel;
   }
 }

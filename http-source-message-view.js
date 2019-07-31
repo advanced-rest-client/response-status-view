@@ -11,36 +11,29 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 */
-import {PolymerElement} from '../../@polymer/polymer/polymer-element.js';
-import {html} from '../../@polymer/polymer/lib/utils/html-tag.js';
-import '../../@polymer/iron-flex-layout/iron-flex-layout.js';
-import '../../@polymer/paper-icon-button/paper-icon-button.js';
-import '../../@polymer/iron-collapse/iron-collapse.js';
-import '../../@advanced-rest-client/arc-icons/arc-icons.js';
+import { LitElement, html, css } from 'lit-element';
+import '@polymer/paper-icon-button/paper-icon-button.js';
+import '@polymer/iron-collapse/iron-collapse.js';
+import '@advanced-rest-client/arc-icons/arc-icons.js';
 /**
  * The element displays the HTTP source message that has been sent to the remote mchine.
  *
  * @customElement
  * @polymer
  * @demo demo/index.html
- * @memberof ApiElements
+ * @memberof UiElements
  */
-class HttpSourceMessageView extends PolymerElement {
-  static get template() {
-    return html`
-    <style>
-     :host {
-      margin: 16px 16px 0 16px;
+class HttpSourceMessageView extends LitElement {
+  static get styles() {
+    return css`:host {
       overflow: auto;
       display: block;
-      @apply --http-source-message-view;
     }
 
     pre {
       word-break: break-all;
-      @apply --select-text;
-      @apply --arc-font-code1;
-      @apply --http-source-message;
+      user-select: text;
+      font-family: var(--arc-font-code-family, initial);
       margin-bottom: 0;
     }
 
@@ -48,26 +41,58 @@ class HttpSourceMessageView extends PolymerElement {
       margin: 0;
       display: inline-block;
       cursor: pointer;
-      @apply --http-source-message-view-title;
-    }
-    </style>
-    <h5 on-tap="toggle">
+    }`;
+  }
+
+  render() {
+    const { opened, message } = this;
+    return html`
+    <h5 @click="${this.toggle}">
       Source message
-      <paper-icon-button icon="[[_computeIcon(opened)]]"></paper-icon-button>
+      <paper-icon-button .icon="${this._computeIcon(opened)}" title="Toggles source view"></paper-icon-button>
     </h5>
-    <iron-collapse id="collapse" opened="{{opened}}">
-      <pre>[[message]]</pre>
-    </iron-collapse>
-`;
+    <iron-collapse id="collapse" .opened="${opened}">
+      <pre>${message}</pre>
+    </iron-collapse>`;
   }
 
   static get properties() {
     return {
       // A HTTP message to display.
-      message: String,
+      message: { type: String },
       // True if the message is visible.
-      opened: Boolean
+      opened: { type: Boolean },
+      /**
+       * Icon prefix from the svg icon set. This can be used to replace the set
+       * without changing the icon.
+       *
+       * Defaults to `arc`.
+       */
+      iconPrefix: { type: String }
     };
+  }
+
+  get opened() {
+    return this._opened;
+  }
+
+  set opened(value) {
+    const old = this._opened;
+    if (old === value) {
+      return;
+    }
+    this._opened = value;
+    this.requestUpdate('opened', old);
+    if (value) {
+      this.setAttribute('aria-expanded', 'true');
+    } else {
+      this.setAttribute('aria-expanded', 'false');
+    }
+  }
+
+  constructor() {
+    super();
+    this.iconPrefix = 'arc';
   }
   /**
    * Toggles source message visibility
@@ -81,7 +106,11 @@ class HttpSourceMessageView extends PolymerElement {
    * @return {String}
    */
   _computeIcon(opened) {
-    return opened ? 'arc:expand-less' : 'arc:expand-more';
+    let icon = '';
+    if (this.iconPrefix) {
+      icon = this.iconPrefix + ':';
+    }
+    return icon + (opened ? 'expand-less' : 'expand-more');
   }
 }
 window.customElements.define('http-source-message-view', HttpSourceMessageView);

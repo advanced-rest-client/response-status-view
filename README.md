@@ -6,7 +6,7 @@
 
 ## &lt;response-status-view&gt;
 
-HTTP response status view, including status, headers redirects and timings
+HTTP response status view, including status, headers redirects and timings/
 
 ```html
 <response-status-view></response-status-view>
@@ -38,43 +38,61 @@ npm install --save @advanced-rest-client/response-status-view
 </html>
 ```
 
-### In a Polymer 3 element
+
+### In a LitElement
 
 ```js
-import {PolymerElement, html} from '@polymer/polymer';
+import { LitElement, html } from 'lit-element';
 import '@advanced-rest-client/response-status-view/response-status-view.js';
 
 class SampleElement extends PolymerElement {
-  static get template() {
+  render() {
     return html`
-    <response-status-view></response-status-view>
+    <response-status-view .json="${this.json}"></response-status-view>
     `;
-  }
-
-  _authChanged(e) {
-    console.log(e.detail);
   }
 }
 customElements.define('sample-element', SampleElement);
 ```
 
-### Installation
+### In a Polymer 3 element
+
+```js
+import { PolymerElement, html } from '@polymer/polymer';
+import '@advanced-rest-client/response-status-view/response-status-view.js';
+
+class SampleElement extends PolymerElement {
+  static get template() {
+    return html`
+    <response-status-view
+      .statusCode="{this.response.statusCode}"
+      .statusMessage="{this.response.statusMessage}"
+      .loadingTime="{this.response.loadingTime}"
+      .responseHeaders="{this.response.responseHeaders}"
+      .requestHeaders="{this.response.requestHeaders}"
+      ...></response-status-view>
+    `;
+  }
+}
+customElements.define('sample-element', SampleElement);
+```
+
+### Development
 
 ```sh
 git clone https://github.com/advanced-rest-client/response-status-view
-cd api-url-editor
+cd response-status-view
 npm install
-npm install -g polymer-cli
 ```
 
 ### Running the demo locally
 
 ```sh
-polymer serve --npm
-open http://127.0.0.1:<port>/demo/
+npm start
 ```
 
 ### Running the tests
+
 ```sh
-polymer test --npm
+npm test
 ```

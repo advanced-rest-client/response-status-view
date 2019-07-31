@@ -11,24 +11,19 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 */
-import {PolymerElement} from '../../@polymer/polymer/polymer-element.js';
-import {html} from '../../@polymer/polymer/lib/utils/html-tag.js';
-import {ResponseStatusMixin} from './response-status-mixin.js';
-import '../../@polymer/polymer/lib/elements/dom-if.js';
-import '../../@polymer/polymer/lib/elements/dom-repeat.js';
-import '../../@polymer/iron-flex-layout/iron-flex-layout.js';
-import '../../@polymer/paper-tabs/paper-tabs.js';
-import '../../@polymer/paper-tabs/paper-tab.js';
-import '../../@polymer/iron-pages/iron-pages.js';
-import '../../@advanced-rest-client/request-timings/request-timings-panel.js';
-import '../../@advanced-rest-client/headers-list-view/headers-list-view.js';
-import '../../@polymer/iron-collapse/iron-collapse.js';
-import '../../@polymer/paper-button/paper-button.js';
-import '../../@polymer/iron-icon/iron-icon.js';
-import '../../@advanced-rest-client/arc-icons/arc-icons.js';
+import { LitElement, html, css } from 'lit-element';
+import { ResponseStatusMixin } from './response-status-mixin.js';
+import '@polymer/paper-tabs/paper-tabs.js';
+import '@polymer/paper-tabs/paper-tab.js';
+import '@advanced-rest-client/request-timings/request-timings-panel.js';
+import '@advanced-rest-client/headers-list-view/headers-list-view.js';
+import '@polymer/iron-collapse/iron-collapse.js';
+import '@polymer/paper-button/paper-button.js';
+import '@polymer/iron-icon/iron-icon.js';
+import '@advanced-rest-client/arc-icons/arc-icons.js';
 import './http-source-message-view.js';
 import './response-redirects-panel.js';
-import './response-status-styles.js';
+import statusStypes from './response-status-styles.js';
 /* eslint-disable max-len */
 /**
  * A class that reads response status code and returns default HTTP status
@@ -275,328 +270,416 @@ export class StatusMessage {
  * with this element.
  *
  * @customElement
- * @polymer
  * @demo demo/index.html
- * @memberof ApiElements
+ * @memberof UiElements
  * @appliesMixin ResponseStatusMixin
  */
-class ResponseStatusView extends ResponseStatusMixin(PolymerElement) {
-  static get template() {
+class ResponseStatusView extends ResponseStatusMixin(LitElement) {
+  static get styles() {
+    return [
+      statusStypes,
+      css`:host {
+        display: flex;
+        flex-direction: column;
+
+        font-size: var(--arc-font-body1-font-size);
+        font-weight: var(--arc-font-body1-font-weight);
+        line-height: var(--arc-font-body1-line-height);
+      }
+
+      .badge {
+        display: block;
+        background-color: var(--response-status-view-badge-background, var(--accent-color));
+        color: var(--response-status-view-badge-color, #fff);
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        font-size: 12px;
+        margin-left: 12px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .badge.empty {
+        background-color: var(--response-status-view-empty-badge-background, #9e9e9e);
+        color: var(--response-status-view-empty-badge-color, #fff);
+      }
+
+      .response-time {
+        color: var(--response-status-view-loading-time-color, rgba(0, 0, 0, 0.54));
+        margin-left: 8px;
+        display: block;
+      }
+
+      .status-info {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        flex: 1;
+        padding: 0 4px;
+      }
+
+      .toggle-button {
+        color: var(--response-status-view-toggle-icon-color, rgba(0, 0, 0, 0.54));
+        transition: color 0.25s linear;
+      }
+
+      .toggle-icon {
+        transform: rotateZ(0deg);
+        transition: transform 0.3s linear;
+      }
+
+      .toggle-icon.opened {
+        transform: rotateZ(-180deg);
+      }
+
+      .toggle-button:hover {
+        color: var(--response-status-view-toggle-icon-hover-color, rgba(0, 0, 0, 0.78));
+      }
+
+      .xhr-title {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 0px 16px;
+        font-size: var(--arc-font-subhead-font-size);
+        font-weight: var(--arc-font-subhead-font-weight);
+        line-height: var(--arc-font-subhead-line-height);
+      }
+
+      .response-error-label {
+        margin-left: 12px;
+        color: var(--arc-status-code-color-500, rgba(211, 47, 47, 1));
+      }
+
+      .status-url {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding-top: 12px;
+        padding-bottom: 12px;
+        font-size: 120%;
+        padding-left: 16px;
+        background: var(--response-status-view-request-url-background-color, #6B6C6D);
+        color: var(--response-status-view-request-url-color, #fff);
+        font-family: var(--arc-font-code-family, initial);
+      }
+
+      .http-method {
+        margin-right: 12px;
+      }
+
+      .request-url {
+        word-break: break-all;
+      }
+
+      .no-info {
+        padding-left: 16px;
+        font-style: italic;
+      }
+
+      [hidden] {
+        display: none !important;
+      }`
+    ];
+  }
+
+  render() {
+    const {
+      responseError,
+      loadingTime,
+      statusMessage,
+      statusCode,
+      opened,
+      requestUrl,
+      requestMethod,
+      selectedTab,
+      responseHeaders,
+      requestHeaders,
+      isXhr
+    } = this;
+    let  {
+      redirects
+    } = this;
+    if (!redirects) {
+      redirects = [];
+    }
+    const isError = !!responseError;
+
     return html`
-    <style include="response-status-styles">
-    :host {
-      @apply --layout-vertical;
-      @apply --response-status-view;
-    }
-
-    .badge {
-      display: block;
-      background-color: var(--response-status-view-badge-background, var(--accent-color));
-      color: var(--response-status-view-badge-color, #fff);
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      font-size: 12px;
-      margin-left: 12px;
-      @apply --layout-horizontal;
-      @apply --layout-center-center;
-    }
-
-    .badge.empty {
-      background-color: var(--response-status-view-empty-badge-background, #9e9e9e);
-      color: var(--response-status-view-empty-badge-color, #fff);
-    }
-
-    .response-time {
-      color: var(--response-status-view-loading-time-color, rgba(0, 0, 0, 0.54));
-      margin-left: 8px;
-      display: block;
-      @apply --response-status-view-time;
-    }
-
-    .status-info {
-      @apply --layout-horizontal;
-      @apply --layout-center;
-      @apply --layout-flex;
-      padding: 0 4px;
-    }
-
-    .toggle-button {
-      color: var(--response-status-view-toggle-icon-color, rgba(0, 0, 0, 0.54));
-      transition: color 0.25s linear;
-    }
-
-    .toggle-icon {
-      transform: rotateZ(0deg);
-      transition: transform 0.3s linear;
-    }
-
-    .toggle-icon.opened {
-      transform: rotateZ(-180deg);
-    }
-
-    .toggle-button:hover {
-      color: var(--response-status-view-toggle-icon-hover-color, rgba(0, 0, 0, 0.78));
-    }
-
-    .xhr-title {
-      @apply --layout-horizontal;
-      @apply --layout-center;
-      padding: 0px 16px;
-      @apply --arc-font-subhead;
-    }
-
-    .response-error-label {
-      margin-left: 12px;
-      color: var(--arc-status-code-color-500, rgba(211, 47, 47, 1));
-    }
-
-    .status-url {
-      @apply --arc-font-body1;
-      @apply --layout-horizontal;
-      @apply --layout-center;
-      padding-top: 12px;
-      padding-bottom: 12px;
-      font-size: 120%;
-      padding-left: 16px;
-      background: var(--response-status-view-request-url-background-color, #6B6C6D);
-      color: var(--response-status-view-request-url-color, #fff);
-      @apply --arc-font-code;
-      @apply --response-status-view-request-url-info;
-    }
-
-    .http-method {
-      margin-right: 12px;
-    }
-
-    .request-url {
-      word-break: break-all;
-    }
-
-    .no-info {
-      padding-left: 16px;
-      @apply --no-info-message;
-    }
-
-    [hidden] {
-      display: none !important;
-    }
-    </style>
     <div class="status-row">
       <div class="status-value status">
-        <template is="dom-if" if="[[!isError]]">
-          <div class="status-info text">
-            <span class\$="[[_computeStatusClass(statusCode)]]">[[statusCode]] [[statusMessage]]</span>
-            <span class="response-time" hidden\$="[[!loadingTime]]">[[_roundTime(loadingTime)]] ms</span>
-          </div>
-          <div class="status-details">
-            <paper-button on-tap="toggleCollapse" class="toggle-button" title="Toogles response headers">
-              Details
-              <iron-icon icon="arc:expand-more" class\$="[[_computeToggleIconClass(opened)]]"></iron-icon>
-            </paper-button>
-          </div>
-        </template>
-        <template is="dom-if" if="[[isError]]">
-          <span class="error status-code-value">0</span>
-          <span class="response-time" hidden\$="[[!loadingTime]]">[[_roundTime(loadingTime)]] ms</span>
-          <p class="response-error-label">Error in the response.</p>
-        </template>
+      ${isError ?
+        html`<span class="error status-code-value">0</span>
+        ${loadingTime ? html`<span class="response-time">${this._roundTime(loadingTime)} ms</span>` : undefined}
+        <p class="response-error-label">Error in the response.</p>` :
+        html`<div class="status-info text">
+          <span class="${this._computeStatusClass(statusCode)}">${statusCode} ${statusMessage}</span>
+          ${loadingTime ? html`<span class="response-time">${this._roundTime(loadingTime)} ms</span>` : undefined}
+        </div>
+        <div class="status-details">
+          <paper-button @click="${this.toggleCollapse}" class="toggle-button" title="Toogles response headers">
+            Details
+            <iron-icon icon="${this._computeIcon('expand-more')}" class="${this._computeToggleIconClass(opened)}"></iron-icon>
+          </paper-button>
+        </div>`}
       </div>
     </div>
-    <iron-collapse opened="[[opened]]">
-      <template is="dom-if" if="[[requestUrl]]">
-        <div class="status-url">
-          <span class="http-method" hidden\$="[[!requestMethod]]">[[requestMethod]]</span>
-          <span class="request-url">[[requestUrl]]</span>
-        </div>
-      </template>
-      <paper-tabs selected="{{selectedTab}}">
+
+    <iron-collapse .opened="${opened}">
+      ${requestUrl ? html`<div class="status-url">
+        ${requestMethod ? html`<span class="http-method">${requestMethod}</span>` : undefined}
+        <span class="request-url">${requestUrl}</span>
+      </div>` : undefined}
+
+      <paper-tabs .selected="${selectedTab}" @selected-changed="${this._tabChangeHandler}">
         <paper-tab>
           <span>Response headers</span>
-          <span class\$="[[_computeBageClass(responseHeaders)]]">[[_computeHeadersLength(responseHeaders)]]</span>
+          <span class="${this._computeBageClass(responseHeaders)}">${this._computeHeadersLength(responseHeaders)}</span>
         </paper-tab>
         <paper-tab>
           <span>Request headers</span>
-          <span class\$="[[_computeBageClass(requestHeaders)]]">[[_computeHeadersLength(requestHeaders)]]</span>
+          <span class="${this._computeBageClass(requestHeaders)}">${this._computeHeadersLength(requestHeaders)}</span>
         </paper-tab>
-        <template is="dom-if" if="[[!isXhr]]">
-          <paper-tab>
-            <span>Redirects</span>
-            <span class\$="[[_computeBageClass(redirects.length)]]">[[redirects.length]]</span>
-          </paper-tab>
-          <paper-tab>Timings</paper-tab>
-        </template>
+        ${isXhr ? undefined : html`<paper-tab>
+          <span>Redirects</span>
+          <span class="${this._computeBageClass(redirects.length)}">${redirects.length}</span>
+        </paper-tab>
+        <paper-tab>Timings</paper-tab>`}
       </paper-tabs>
-      <iron-pages selected="[[selectedTab]]">
-        <section class="response-headers-panel">
-          <template is="dom-if" if="[[hasResponseHeaders]]">
-            <headers-list-view type="response" on-tap="_handleLink" headers="[[responseHeaders]]" data-source="response-headers"></headers-list-view>
-          </template>
-          <template is="dom-if" if="[[!hasResponseHeaders]]">
-            <div class="no-info-container">
-              <p class="no-info">Nothing to display here</p>
-            </div>
-          </template>
-        </section>
-        <section class="request-headers-panel">
-          <template is="dom-if" if="[[hasRequestHeaders]]">
-            <headers-list-view type="request" on-tap="_handleLink" headers="[[requestHeaders]]" data-source="request-headers"></headers-list-view>
-          </template>
-          <template is="dom-if" if="[[!hasRequestHeaders]]">
-            <div class="no-info-container">
-              <p class="no-info">Nothing to display here</p>
-            </div>
-          </template>
-          <template is="dom-if" if="[[hasHttpMessage]]">
-            <http-source-message-view message="[[httpMessage]]"></http-source-message-view>
-          </template>
-        </section>
-        <template is="dom-if" if="[[!isXhr]]">
-          <response-redirects-panel redirects="[[redirects]]"></response-redirects-panel>
-          <request-timings-panel redirect-timings="[[redirectTimings]]" timings="[[timings]]"></request-timings-panel>
-        </template>
-      </iron-pages>
-    </iron-collapse>
-`;
+      ${this._selectedTemplate(selectedTab)}
+    </iron-collapse>`;
+  }
+
+  _selectedTemplate(selected) {
+    const { narrow } = this;
+    switch (selected) {
+      case 0: return html`<section class="response-headers-panel">
+      ${this.responseHeaders ?
+        html`<headers-list-view
+          type="response"
+          ?narrow="${narrow}"
+          @click="${this._handleLink}"
+          .headers="${this.responseHeaders}"
+          data-source="response-headers"></headers-list-view>` :
+        html`<div class="no-info-container">
+          <p class="no-info">No response headers recorded.</p>
+        </div>`}
+      </section>`;
+      case 1: return html`<section class="request-headers-panel">
+        ${this.requestHeaders ?
+          html`<headers-list-view
+            ?narrow="${narrow}"
+            type="request"
+            @click="${this._handleLink}"
+            .headers="${this.requestHeaders}"
+            data-source="request-headers"></headers-list-view>` :
+          html`<div class="no-info-container">
+            <p class="no-info">No request headers recorded.</p>
+          </div>`}
+        ${this.httpMessage ? html`<http-source-message-view
+          .message="${this.httpMessage}"
+          .iconPrefix="${this.iconPrefix}"></http-source-message-view>` : undefined}
+      </section>`;
+      case 2: return html`<response-redirects-panel
+        .redirects="${this.redirects}"
+        ?narrow="${narrow}"></response-redirects-panel>`;
+      case 3: return html`<request-timings-panel
+        .redirectTimings="${this.redirectTimings}"
+        .timings="${this.timings}"
+        ?narrow="${narrow}"></request-timings-panel>`;
+    }
   }
 
   static get properties() {
     return {
       // Response status code.
-      statusCode: {
-        type: Number,
-        observer: '_statusCodeChanged'
-      },
+      statusCode: { type: Number },
       // Status message (if any)
-      statusMessage: String,
+      statusMessage: { type: String },
       // The request/response loading time.
-      loadingTime: {
-        type: Number,
-        value: 0
-      },
+      loadingTime: { type: Number },
       /**
        * The response headers as a HTTP headers string
        */
-      responseHeaders: String,
-      /**
-       * Computed value, `true` if response headers are set
-       */
-      hasResponseHeaders: {
-        type: String,
-        value: false,
-        computed: '_computeHasHeaders(responseHeaders)'
-      },
+      responseHeaders: { type: String },
       // The request headers as a HTTP headers string
-      requestHeaders: String,
-      // Computed value, true when request headers are set.
-      hasRequestHeaders: {
-        type: String,
-        value: false,
-        computed: '_computeHasHeaders(requestHeaders)'
-      },
+      requestHeaders: { type: String },
       /**
        * Raw HTTP message sent to the server.
        * It will be displayed in the request headers tab.
        * Optional for transports that do not expose this information.
        */
-      httpMessage: {
-        type: String,
-      },
-      // Computed value, true when source HTTP message is not set.
-      hasHttpMessage: {
-        type: Boolean,
-        readOnly: true,
-        computed: '_computeHasHttpMessage(httpMessage)'
-      },
+      httpMessage: { type: String },
       /**
        * An Error object representing the response error.
        * It uses this property only to determine if the request is errored
        */
-      responseError: {
-        type: Object
-      },
-      // Calculated to be true if responseError object is set.
-      isError: {
-        type: Boolean,
-        value: false,
-        readOnly: true,
-        computed: '_computeIsError(responseError)',
-        observer: '_isErrorChanged'
-      },
+      responseError: { type: Object },
       /**
        * An array of redirect responses.
        * Each of the response objects should be regular Response objects.
+       *
+       * @type {Array<Object>}
        */
-      redirects: Array,
+      redirects: { type: Array },
       /**
        * List of timings occured during the redirects.
        * This list should be ordered by the time of redirection.
        * See the `request-timings` element documentation for more
        * information.
+       *
+       * @type {Array<Object>}
        */
-      redirectTimings: Array,
-      // Currently selected tab.
-      selectedTab: {
-        type: Number,
-        value: 0
-      },
+      redirectTimings: { type: Array },
+      /**
+       * Currently selected tab.
+       */
+      selectedTab: { type: Number },
       /**
        * The timings object to display request/response timing information
        * as defined in HAR 1.2 spec.
        * See the `request-timings` element documentation for more
        * information.
        */
-      timings: {
-        type: Object,
-        notify: true
-      },
+      timings: { type: Object },
       /**
        * If true it means that the request has been made by the basic
        * transport and advanced details of the request/response like
        * redirects, timings, source message are not available.
        * It this case it will hide unused tabs.
        */
-      isXhr: {
-        type: Boolean,
-        observer: '_isXhrChanged',
-        value: false
-      },
-      // True if the collapsable element is opened
-      opened: {
-        type: Boolean,
-        value: false
-      },
-      // A request URL that has been used to make a request
-      requestUrl: String,
-      // A HTTP method used to make a request
-      requestMethod: String
+      isXhr: { type: Boolean },
+      /**
+       * True if the element is expanded
+       */
+      opened: { type: Boolean },
+      /**
+       * A request URL that has been used to make a request
+       */
+      requestUrl: { type: String },
+      /**
+       * A HTTP method used to make a request.
+       */
+      requestMethod: { type: String },
+      /**
+       * Renders mobile frinedly view
+       */
+      narrow: { type: Boolean },
+      /**
+       * Icon prefix from the svg icon set. This can be used to replace the set
+       * without changing the icon.
+       *
+       * Defaults to `arc`.
+       */
+      iconPrefix: { type: String }
     };
   }
 
-  connectedCallback() {
-    super.connectedCallback();
-    if (this.statusCode) {
-      this._statusCodeChanged(this.statusCode);
-    }
+  get statusCode() {
+    return this._statusCode;
   }
 
-  _statusCodeChanged(value) {
-    if (value === undefined) {
-      this.statusCode = 0;
+  set statusCode(value) {
+    const old = this._statusCode;
+    if (old === value) {
       return;
     }
-    setTimeout(() => {
-      this.assignStatusMessage();
-    });
+    if (!value) {
+      value = 0;
+    }
+    this._statusCode = value;
+    this.requestUpdate('statusCode', old);
+    this._statusCodeChanged();
   }
 
-  /**
-   * Computes value for `isError` property.
-   * @param {Object} responseError Response error object
-   * @return {Boolean}
-   */
-  _computeIsError(responseError) {
-    return !!responseError;
+  get statusMessage() {
+    return this._statusMessage;
+  }
+
+  set statusMessage(value) {
+    const old = this._statusMessage;
+    if (old === value) {
+      return;
+    }
+    if (!value) {
+      value = 0;
+    }
+    this._statusMessage = value;
+    this.requestUpdate('statusMessage', old);
+    this._statusCodeChanged();
+  }
+
+  get responseError() {
+    return this._responseError;
+  }
+
+  set responseError(value) {
+    const old = this._responseError;
+    if (old === value) {
+      return;
+    }
+    this._responseError = value;
+    this.requestUpdate('responseError', old);
+    if (value && this.opened) {
+      this.opened = false;
+    }
+  }
+
+  get isXhr() {
+    return this._isXhr;
+  }
+
+  set isXhr(value) {
+    const old = this._isXhr;
+    if (old === value) {
+      return;
+    }
+    this._isXhr = value;
+    this.requestUpdate('isXhr', old);
+    this._isXhrChanged(value);
+  }
+
+  get opened() {
+    return this._opened;
+  }
+
+  set opened(value) {
+    const old = this._opened;
+    if (old === value) {
+      return;
+    }
+    this._opened = value;
+    this.requestUpdate('opened', old);
+    if (value) {
+      this.setAttribute('aria-expanded', 'true');
+    } else {
+      this.setAttribute('aria-expanded', 'false');
+    }
+  }
+
+  constructor() {
+    super();
+    this.loadingTime = 0;
+    this.selectedTab = 0;
+    this.opened = false;
+    this.iconPrefix = 'arc';
+  }
+
+  connectedCallback() {
+    /* istanbul ignore else */
+    if (super.connectedCallback) {
+      super.connectedCallback();
+    }
+    if (this.statusCode) {
+      this._statusCodeChanged();
+    }
+  }
+
+  _statusCodeChanged() {
+    setTimeout(() => this.assignStatusMessage());
   }
   /**
    * Computes CSS class for the badge in the tabs.
@@ -613,7 +696,7 @@ class ResponseStatusView extends ResponseStatusMixin(PolymerElement) {
       return clsEmpty;
     }
     if (typeof input === 'string') {
-      return !!input ? cls : clsEmpty;
+      return input ? cls : clsEmpty;
     }
     return input === 0 ? clsEmpty : cls;
   }
@@ -630,14 +713,6 @@ class ResponseStatusView extends ResponseStatusMixin(PolymerElement) {
       return 0;
     }
     return headers.split('\n').length;
-  }
-  /**
-   * Computes value for `hasHttpMessage` property.
-   * @param {String|undefined} message HTTP message string.
-   * @return {Boolean}
-   */
-  _computeHasHttpMessage(message) {
-    return !!message;
   }
 
   _roundTime(num) {
@@ -669,7 +744,10 @@ class ResponseStatusView extends ResponseStatusMixin(PolymerElement) {
     }
     this.statusMessage = StatusMessage.getMessage(this.statusCode);
   }
-  // Resets current tab when isXhr is true.
+  /**
+   * Resets current tab when isXhr is true.
+   * @param {Boolean} value current state of `isXhr`
+   */
   _isXhrChanged(value) {
     if (value === undefined) {
       return;
@@ -679,23 +757,28 @@ class ResponseStatusView extends ResponseStatusMixin(PolymerElement) {
     }
     const tabs = this.shadowRoot.querySelector('paper-tabs');
     if (!tabs) {
-      console.warn('Tabs panel not found in DOM');
       return;
     }
     tabs.notifyResize();
   }
-  // Computes if headers are set
-  _computeHasHeaders(requestHeaders) {
-    return !!requestHeaders;
+  /**
+   * A handler for the selection change on the paper-tabs elemet.
+   * @param {CustomEvent} e
+   */
+  _tabChangeHandler(e) {
+    this.selectedTab = e.detail.value;
   }
   /**
-   * Closes the collapse when error is set.
-   * @param {Boolean} error Flag indicating error
+   * Computes icon name depending on `opened` state
+   * @param {String} iconName
+   * @return {String}
    */
-  _isErrorChanged(error) {
-    if (error) {
-      this.opened = false;
+  _computeIcon(iconName) {
+    let icon = '';
+    if (this.iconPrefix) {
+      icon = this.iconPrefix + ':';
     }
+    return icon + iconName;
   }
 }
 window.customElements.define('response-status-view', ResponseStatusView);
