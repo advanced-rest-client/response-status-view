@@ -5,28 +5,35 @@
  *   https://github.com/Polymer/tools/tree/master/packages/gen-typescript-declarations
  *
  * To modify these typings, edit the source file(s):
- *   response-status-view.html
+ *   response-status-view.js
  */
 
-/// <reference path="../polymer/types/polymer-element.d.ts" />
-/// <reference path="../polymer/types/lib/elements/dom-if.d.ts" />
-/// <reference path="../polymer/types/lib/elements/dom-repeat.d.ts" />
-/// <reference path="../iron-flex-layout/iron-flex-layout.d.ts" />
-/// <reference path="../paper-tabs/paper-tabs.d.ts" />
-/// <reference path="../paper-tabs/paper-tab.d.ts" />
-/// <reference path="../iron-pages/iron-pages.d.ts" />
-/// <reference path="../request-timings/request-timings-panel.d.ts" />
-/// <reference path="../headers-list-view/headers-list-view.d.ts" />
-/// <reference path="../iron-collapse/iron-collapse.d.ts" />
-/// <reference path="../paper-button/paper-button.d.ts" />
-/// <reference path="../iron-icon/iron-icon.d.ts" />
-/// <reference path="../arc-icons/arc-icons.d.ts" />
-/// <reference path="http-source-message-view.d.ts" />
-/// <reference path="response-redirects-panel.d.ts" />
-/// <reference path="response-status-mixin.d.ts" />
-/// <reference path="response-status-styles.d.ts" />
 
-declare namespace ApiElements {
+// tslint:disable:variable-name Describing an API that's defined elsewhere.
+// tslint:disable:no-any describes the API as best we are able today
+
+import {LitElement, html, css} from 'lit-element';
+
+import {ResponseStatusMixin} from './response-status-mixin.js';
+
+export {StatusMessage};
+
+/**
+ * A class that reads response status code and returns default HTTP status
+ * message associated with it.
+ */
+declare class StatusMessage {
+
+  /**
+   * Translates status code into status message.
+   *
+   * @param code Status code
+   * @returns Status text if the code is recognized.
+   */
+  static getMessage(code: Number|String|null): String|null|undefined;
+}
+
+declare namespace UiElements {
 
   /**
    * HTTP response status view, including status, headers redirects and timings
@@ -128,7 +135,7 @@ declare namespace ApiElements {
    * with this element.
    */
   class ResponseStatusView extends
-    ArcBehaviors.ResponseStatusMixin(
+    ResponseStatusMixin(
     Object) {
 
     /**
@@ -142,6 +149,25 @@ declare namespace ApiElements {
     statusMessage: string|null|undefined;
 
     /**
+     * An Error object representing the response error.
+     * It uses this property only to determine if the request is errored
+     */
+    responseError: object|null|undefined;
+
+    /**
+     * If true it means that the request has been made by the basic
+     * transport and advanced details of the request/response like
+     * redirects, timings, source message are not available.
+     * It this case it will hide unused tabs.
+     */
+    isXhr: boolean|null|undefined;
+
+    /**
+     * True if the element is expanded
+     */
+    opened: boolean|null|undefined;
+
+    /**
      * The request/response loading time.
      */
     loadingTime: number|null|undefined;
@@ -152,19 +178,9 @@ declare namespace ApiElements {
     responseHeaders: string|null|undefined;
 
     /**
-     * Computed value, `true` if response headers are set
-     */
-    readonly hasResponseHeaders: string|null|undefined;
-
-    /**
      * The request headers as a HTTP headers string
      */
     requestHeaders: string|null|undefined;
-
-    /**
-     * Computed value, true when request headers are set.
-     */
-    readonly hasRequestHeaders: string|null|undefined;
 
     /**
      * Raw HTTP message sent to the server.
@@ -174,26 +190,10 @@ declare namespace ApiElements {
     httpMessage: string|null|undefined;
 
     /**
-     * Computed value, true when source HTTP message is not set.
-     */
-    readonly hasHttpMessage: boolean|null|undefined;
-
-    /**
-     * An Error object representing the response error.
-     * It uses this property only to determine if the request is errored
-     */
-    responseError: object|null|undefined;
-
-    /**
-     * Calculated to be true if responseError object is set.
-     */
-    readonly isError: boolean|null|undefined;
-
-    /**
      * An array of redirect responses.
      * Each of the response objects should be regular Response objects.
      */
-    redirects: any[]|null|undefined;
+    redirects: Array<object|null>|null;
 
     /**
      * List of timings occured during the redirects.
@@ -201,7 +201,7 @@ declare namespace ApiElements {
      * See the `request-timings` element documentation for more
      * information.
      */
-    redirectTimings: any[]|null|undefined;
+    redirectTimings: Array<object|null>|null;
 
     /**
      * Currently selected tab.
@@ -217,36 +217,31 @@ declare namespace ApiElements {
     timings: object|null|undefined;
 
     /**
-     * If true it means that the request has been made by the basic
-     * transport and advanced details of the request/response like
-     * redirects, timings, source message are not available.
-     * It this case it will hide unused tabs.
-     */
-    isXhr: boolean|null|undefined;
-
-    /**
-     * True if the collapsable element is opened
-     */
-    opened: boolean|null|undefined;
-
-    /**
      * A request URL that has been used to make a request
      */
     requestUrl: string|null|undefined;
 
     /**
-     * A HTTP method used to make a request
+     * A HTTP method used to make a request.
      */
     requestMethod: string|null|undefined;
-    attached(): void;
-    _statusCodeChanged(): void;
 
     /**
-     * Computes value for `isError` property.
-     *
-     * @param responseError Response error object
+     * Renders mobile frinedly view
      */
-    _computeIsError(responseError: object|null): Boolean|null;
+    narrow: boolean|null|undefined;
+
+    /**
+     * Icon prefix from the svg icon set. This can be used to replace the set
+     * without changing the icon.
+     *
+     * Defaults to `arc`.
+     */
+    iconPrefix: string|null|undefined;
+    render(): any;
+    _selectedTemplate(selected: any): any;
+    connectedCallback(): void;
+    _statusCodeChanged(): void;
 
     /**
      * Computes CSS class for the badge in the tabs.
@@ -267,13 +262,6 @@ declare namespace ApiElements {
      * @returns Size of the headers in passed string.
      */
     _computeHeadersLength(headers: String|null): Number|null;
-
-    /**
-     * Computes value for `hasHttpMessage` property.
-     *
-     * @param message HTTP message string.
-     */
-    _computeHasHttpMessage(message: String|null|undefined): Boolean|null;
     _roundTime(num: any): any;
 
     /**
@@ -288,29 +276,32 @@ declare namespace ApiElements {
 
     /**
      * Runs status text recognition after ~100 ms to ensure a status message
-     * is displayed event if there wasn't any.
+     * is displayed even if there wasn't any.
      */
     assignStatusMessage(): void;
 
     /**
      * Resets current tab when isXhr is true.
-     */
-    _isXhrChanged(value: any): void;
-
-    /**
-     * Computes if headers are set
-     */
-    _computeHasHeaders(requestHeaders: any): any;
-
-    /**
-     * Closes the collapse when error is set.
      *
-     * @param error Flag indicating error
+     * @param value current state of `isXhr`
      */
-    _isErrorChanged(error: Boolean|null): void;
+    _isXhrChanged(value: Boolean|null): void;
+
+    /**
+     * A handler for the selection change on the paper-tabs elemet.
+     */
+    _tabChangeHandler(e: CustomEvent|null): void;
+
+    /**
+     * Computes icon name depending on `opened` state
+     */
+    _computeIcon(iconName: String|null): String|null;
   }
 }
 
-interface HTMLElementTagNameMap {
-  "response-status-view": ApiElements.ResponseStatusView;
+declare global {
+
+  interface HTMLElementTagNameMap {
+    "response-status-view": UiElements.ResponseStatusView;
+  }
 }

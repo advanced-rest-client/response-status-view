@@ -5,41 +5,33 @@
  *   https://github.com/Polymer/tools/tree/master/packages/gen-typescript-declarations
  *
  * To modify these typings, edit the source file(s):
- *   response-redirects-panel.html
+ *   response-redirects-panel.js
  */
 
-/// <reference path="../polymer/types/polymer-element.d.ts" />
-/// <reference path="../polymer/types/lib/elements/dom-if.d.ts" />
-/// <reference path="../polymer/types/lib/elements/dom-repeat.d.ts" />
-/// <reference path="../iron-flex-layout/iron-flex-layout.d.ts" />
-/// <reference path="../headers-list-view/headers-list-view.d.ts" />
-/// <reference path="response-status-mixin.d.ts" />
-/// <reference path="response-status-styles.d.ts" />
 
-declare namespace ApiElements {
+// tslint:disable:variable-name Describing an API that's defined elsewhere.
+// tslint:disable:no-any describes the API as best we are able today
+
+import {LitElement, html, css} from 'lit-element';
+
+import {ResponseStatusMixin} from './response-status-mixin.js';
+
+declare namespace UiElements {
 
   /**
    * HTTP redirects info panel.
    * Renders list of redirects and headers in the response.
    */
   class ResponseRedirectsPanel extends
-    ArcBehaviors.ResponseStatusMixin(
+    ResponseStatusMixin(
     Object) {
 
     /**
      * List of redirects information.
      */
     redirects: any[]|null|undefined;
-
-    /**
-     * Computed value, `true` when `redirects` property is set and has value
-     */
-    readonly hasRedirects: boolean|null|undefined;
-
-    /**
-     * Computes 0-based index to 1-based number.
-     */
-    _computeIndexName(index: Number|null): Number|null;
+    _listItemTemplate(item: any, index: any): any;
+    render(): any;
 
     /**
      * Extracts a location URL form the headers.
@@ -49,10 +41,12 @@ declare namespace ApiElements {
      * found.
      */
     _computeRedirectLocation(headers: String|null): String|null;
-    _computeHasRedirects(record: any): any;
   }
 }
 
-interface HTMLElementTagNameMap {
-  "response-redirects-panel": ApiElements.ResponseRedirectsPanel;
+declare global {
+
+  interface HTMLElementTagNameMap {
+    "response-redirects-panel": UiElements.ResponseRedirectsPanel;
+  }
 }

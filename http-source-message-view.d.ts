@@ -5,21 +5,26 @@
  *   https://github.com/Polymer/tools/tree/master/packages/gen-typescript-declarations
  *
  * To modify these typings, edit the source file(s):
- *   http-source-message-view.html
+ *   http-source-message-view.js
  */
 
-/// <reference path="../polymer/types/polymer-element.d.ts" />
-/// <reference path="../iron-flex-layout/iron-flex-layout.d.ts" />
-/// <reference path="../paper-icon-button/paper-icon-button.d.ts" />
-/// <reference path="../iron-collapse/iron-collapse.d.ts" />
-/// <reference path="../arc-icons/arc-icons.d.ts" />
 
-declare namespace ApiElements {
+// tslint:disable:variable-name Describing an API that's defined elsewhere.
+// tslint:disable:no-any describes the API as best we are able today
+
+import {LitElement, html, css} from 'lit-element';
+
+declare namespace UiElements {
 
   /**
    * The element displays the HTTP source message that has been sent to the remote mchine.
    */
-  class HttpSourceMessageView extends Polymer.Element {
+  class HttpSourceMessageView extends LitElement {
+
+    /**
+     * True if the message is visible.
+     */
+    opened: boolean|null|undefined;
 
     /**
      * A HTTP message to display.
@@ -27,9 +32,14 @@ declare namespace ApiElements {
     message: string|null|undefined;
 
     /**
-     * True if the message is visible.
+     * Icon prefix from the svg icon set. This can be used to replace the set
+     * without changing the icon.
+     *
+     * Defaults to `arc`.
      */
-    opened: boolean|null|undefined;
+    iconPrefix: string|null|undefined;
+    constructor();
+    render(): any;
 
     /**
      * Toggles source message visibility
@@ -43,6 +53,9 @@ declare namespace ApiElements {
   }
 }
 
-interface HTMLElementTagNameMap {
-  "http-source-message-view": ApiElements.HttpSourceMessageView;
+declare global {
+
+  interface HTMLElementTagNameMap {
+    "http-source-message-view": UiElements.HttpSourceMessageView;
+  }
 }

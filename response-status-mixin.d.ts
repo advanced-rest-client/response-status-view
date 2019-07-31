@@ -5,38 +5,10 @@
  *   https://github.com/Polymer/tools/tree/master/packages/gen-typescript-declarations
  *
  * To modify these typings, edit the source file(s):
- *   response-status-mixin.html
+ *   response-status-mixin.js
  */
 
-/// <reference path="../polymer/types/lib/utils/mixin.d.ts" />
 
-declare namespace ArcBehaviors {
+// tslint:disable:variable-name Describing an API that's defined elsewhere.
 
-
-  /**
-   * Common function for response status view
-   */
-  function ResponseStatusMixin<T extends new (...args: any[]) => {}>(base: T): T & ResponseStatusMixinConstructor;
-
-  interface ResponseStatusMixinConstructor {
-    new(...args: any[]): ResponseStatusMixin;
-  }
-
-  interface ResponseStatusMixin {
-
-    /**
-     * Comnputes CSS class name depending on response status code.
-     *
-     * @param code Status code
-     * @returns Css class name for status code.
-     */
-    _computeStatusClass(code: Number|null): String|null;
-
-    /**
-     * Click event listener to recognize click on a `link` element.
-     * Dispatches `action-link-change` custom event when event's source is
-     * an anchor.
-     */
-    _handleLink(e: ClickEvent|null): void;
-  }
-}
+export {ResponseStatusMixin};

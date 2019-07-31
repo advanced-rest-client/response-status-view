@@ -5,8 +5,10 @@
  *   https://github.com/Polymer/tools/tree/master/packages/gen-typescript-declarations
  *
  * To modify these typings, edit the source file(s):
- *   response-status-styles.html
+ *   response-status-styles.js
  */
 
-/// <reference path="../polymer/types/polymer-element.d.ts" />
 
+// tslint:disable:variable-name Describing an API that's defined elsewhere.
+
+import {css} from 'lit-element';
