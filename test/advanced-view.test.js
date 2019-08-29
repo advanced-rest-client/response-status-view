@@ -1,7 +1,6 @@
 import { fixture, assert, nextFrame, aTimeout } from '@open-wc/testing';
-import sinon from 'sinon/pkg/sinon-esm.js';
+import * as sinon from 'sinon/pkg/sinon-esm.js';
 import { StatusMessage } from '../response-status-view.js';
-import '../response-status-view.js';
 
 describe('<response-status-view>', function() {
   async function basicFixture() {
@@ -16,7 +15,7 @@ describe('<response-status-view>', function() {
     it('Renders all tabs', async () => {
       const element = await basicFixture();
       await nextFrame();
-      const tabs = element.shadowRoot.querySelectorAll('paper-tab');
+      const tabs = element.shadowRoot.querySelectorAll('anypoint-tab');
       assert.equal(tabs.length, 4);
     });
 

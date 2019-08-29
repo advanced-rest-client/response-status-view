@@ -1,5 +1,5 @@
 import { fixture, assert, defineCE } from '@open-wc/testing';
-import sinon from 'sinon/pkg/sinon-esm.js';
+import * as sinon from 'sinon/pkg/sinon-esm.js';
 import { ResponseStatusMixin } from '../response-status-mixin.js';
 
 const tag = defineCE(class extends ResponseStatusMixin(HTMLElement) {

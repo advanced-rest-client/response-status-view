@@ -1,5 +1,5 @@
 import { fixture, assert, nextFrame, aTimeout } from '@open-wc/testing';
-import sinon from 'sinon/pkg/sinon-esm.js';
+import * as sinon from 'sinon/pkg/sinon-esm.js';
 import '../response-status-view.js';
 
 describe('<response-status-view>', function() {
@@ -423,14 +423,14 @@ describe('<response-status-view>', function() {
     });
 
     it('notifies tabs', () => {
-      const tabs = element.shadowRoot.querySelector('paper-tabs');
+      const tabs = element.shadowRoot.querySelector('anypoint-tabs');
       const spy = sinon.spy(tabs, 'notifyResize');
       element._isXhrChanged(true);
       assert.isTrue(spy.called);
     });
 
     it('ignores undefined', () => {
-      const tabs = element.shadowRoot.querySelector('paper-tabs');
+      const tabs = element.shadowRoot.querySelector('anypoint-tabs');
       const spy = sinon.spy(tabs, 'notifyResize');
       element._isXhrChanged();
       assert.isFalse(spy.called);
@@ -453,7 +453,7 @@ describe('<response-status-view>', function() {
     });
 
     it('changes selection when tab changed', () => {
-      const node = element.shadowRoot.querySelectorAll('paper-tabs paper-tab')[1];
+      const node = element.shadowRoot.querySelectorAll('anypoint-tabs anypoint-tab')[1];
       node.click();
       assert.equal(element.selectedTab, 1);
     });

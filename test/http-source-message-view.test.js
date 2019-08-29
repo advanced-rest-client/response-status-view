@@ -1,5 +1,5 @@
 import { fixture, assert } from '@open-wc/testing';
-import sinon from 'sinon/pkg/sinon-esm.js';
+import * as sinon from 'sinon/pkg/sinon-esm.js';
 import '../http-source-message-view.js';
 
 describe('<http-source-message-view>', function() {

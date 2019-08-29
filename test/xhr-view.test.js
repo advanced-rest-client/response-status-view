@@ -19,7 +19,7 @@ describe('<response-status-view>', function() {
     });
 
     it('Renders only 2 tabs', () => {
-      const tabs = element.shadowRoot.querySelectorAll('paper-tab');
+      const tabs = element.shadowRoot.querySelectorAll('anypoint-tab');
       assert.equal(tabs.length, 2);
     });
 

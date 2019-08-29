@@ -2,8 +2,8 @@ import { html } from 'lit-html';
 import { ArcDemoPage } from '@advanced-rest-client/arc-demo-helper/ArcDemoPage.js';
 import '@polymer/paper-input/paper-input.js';
 import '@polymer/paper-input/paper-textarea.js';
-import '@polymer/paper-tabs/paper-tabs.js';
-import '@polymer/paper-tabs/paper-tab.js';
+import '@anypoint-web-components/anypoint-tabs/anypoint-tabs.js';
+import '@anypoint-web-components/anypoint-tabs/anypoint-tab.js';
 import '@polymer/paper-button/paper-button.js';
 import '@polymer/paper-checkbox/paper-checkbox.js';
 import '@advanced-rest-client/arc-definitions/arc-definitions.js';
@@ -497,14 +497,14 @@ class ComponentDemo extends ArcDemoPage {
         <paper-input type="text" .value="${requestUrl}" label="Request URL" required auto-validate data-prop="requestUrl" @input="${this._inputHandler}"></paper-input>
       </div>
 
-      <paper-tabs .selected="${selectedTab}" @selected-changed="${this._tabHandler}">
-        <paper-tab>Basic settings</paper-tab>
+      <anypoint-tabs .selected="${selectedTab}" @selected-changed="${this._tabHandler}">
+        <anypoint-tab>Basic settings</anypoint-tab>
         ${!isXhr ? html`
-          <paper-tab>Response timings</paper-tab>
-          <paper-tab>Redirect headers</paper-tab>
-          <paper-tab>Redirect timings</paper-tab>
+          <anypoint-tab>Response timings</anypoint-tab>
+          <anypoint-tab>Redirect headers</anypoint-tab>
+          <anypoint-tab>Redirect timings</anypoint-tab>
         ` : undefined}
-      </paper-tabs>
+      </anypoint-tabs>
       ${this._tabTemplate(selectedTab)}
     </section>
 

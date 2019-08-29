@@ -12,7 +12,8 @@ License for the specific language governing permissions and limitations under
 the License.
 */
 import { LitElement, html, css } from 'lit-element';
-import '@polymer/paper-icon-button/paper-icon-button.js';
+import '@anypoint-web-components/anypoint-button/anypoint-icon-button.js';
+import '@polymer/iron-icon/iron-icon.js';
 import '@polymer/iron-collapse/iron-collapse.js';
 import '@advanced-rest-client/arc-icons/arc-icons.js';
 /**
@@ -37,20 +38,26 @@ class HttpSourceMessageView extends LitElement {
       margin-bottom: 0;
     }
 
-    h5 {
+    .title {
       margin: 0;
-      display: inline-block;
+      display: flex;
+      align-items: center;
       cursor: pointer;
+
     }`;
   }
 
   render() {
     const { opened, message } = this;
     return html`
-    <h5 @click="${this.toggle}">
+    <div class="title" @click="${this.toggle}">
       Source message
-      <paper-icon-button .icon="${this._computeIcon(opened)}" title="Toggles source view"></paper-icon-button>
-    </h5>
+      <anypoint-icon-button
+        title="Toggles source view"
+        aria-label="Press to toggle source view">
+          <iron-icon icon="${this._computeIcon(opened)}"></iron-icon>
+      </anypoint-icon-button>
+    </div>
     <iron-collapse id="collapse" .opened="${opened}">
       <pre>${message}</pre>
     </iron-collapse>`;

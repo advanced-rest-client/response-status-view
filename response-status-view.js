@@ -13,12 +13,12 @@ the License.
 */
 import { LitElement, html, css } from 'lit-element';
 import { ResponseStatusMixin } from './response-status-mixin.js';
-import '@polymer/paper-tabs/paper-tabs.js';
-import '@polymer/paper-tabs/paper-tab.js';
+import '@anypoint-web-components/anypoint-tabs/anypoint-tabs.js';
+import '@anypoint-web-components/anypoint-tabs/anypoint-tab.js';
+import '@anypoint-web-components/anypoint-button/anypoint-button.js';
 import '@advanced-rest-client/request-timings/request-timings-panel.js';
 import '@advanced-rest-client/headers-list-view/headers-list-view.js';
 import '@polymer/iron-collapse/iron-collapse.js';
-import '@polymer/paper-button/paper-button.js';
 import '@polymer/iron-icon/iron-icon.js';
 import '@advanced-rest-client/arc-icons/arc-icons.js';
 import './http-source-message-view.js';
@@ -321,11 +321,6 @@ class ResponseStatusView extends ResponseStatusMixin(LitElement) {
         padding: 0 4px;
       }
 
-      .toggle-button {
-        color: var(--response-status-view-toggle-icon-color, rgba(0, 0, 0, 0.54));
-        transition: color 0.25s linear;
-      }
-
       .toggle-icon {
         transform: rotateZ(0deg);
         transition: transform 0.3s linear;
@@ -333,10 +328,6 @@ class ResponseStatusView extends ResponseStatusMixin(LitElement) {
 
       .toggle-icon.opened {
         transform: rotateZ(-180deg);
-      }
-
-      .toggle-button:hover {
-        color: var(--response-status-view-toggle-icon-hover-color, rgba(0, 0, 0, 0.78));
       }
 
       .xhr-title {
@@ -398,7 +389,8 @@ class ResponseStatusView extends ResponseStatusMixin(LitElement) {
       selectedTab,
       responseHeaders,
       requestHeaders,
-      isXhr
+      isXhr,
+      scrollableTab
     } = this;
     let  {
       redirects
@@ -420,10 +412,10 @@ class ResponseStatusView extends ResponseStatusMixin(LitElement) {
           ${loadingTime ? html`<span class="response-time">${this._roundTime(loadingTime)} ms</span>` : undefined}
         </div>
         <div class="status-details">
-          <paper-button @click="${this.toggleCollapse}" class="toggle-button" title="Toogles response headers">
+          <anypoint-button @click="${this.toggleCollapse}" class="toggle-button" title="Toogles response headers">
             Details
             <iron-icon icon="${this._computeIcon('expand-more')}" class="${this._computeToggleIconClass(opened)}"></iron-icon>
-          </paper-button>
+          </anypoint-button>
         </div>`}
       </div>
     </div>
@@ -434,21 +426,21 @@ class ResponseStatusView extends ResponseStatusMixin(LitElement) {
         <span class="request-url">${requestUrl}</span>
       </div>` : undefined}
 
-      <paper-tabs .selected="${selectedTab}" @selected-changed="${this._tabChangeHandler}">
-        <paper-tab>
+      <anypoint-tabs .selected="${selectedTab}" ?scrollable="${scrollableTab}" @selected-changed="${this._tabChangeHandler}">
+        <anypoint-tab>
           <span>Response headers</span>
           <span class="${this._computeBageClass(responseHeaders)}">${this._computeHeadersLength(responseHeaders)}</span>
-        </paper-tab>
-        <paper-tab>
+        </anypoint-tab>
+        <anypoint-tab>
           <span>Request headers</span>
           <span class="${this._computeBageClass(requestHeaders)}">${this._computeHeadersLength(requestHeaders)}</span>
-        </paper-tab>
-        ${isXhr ? undefined : html`<paper-tab>
+        </anypoint-tab>
+        ${isXhr ? undefined : html`<anypoint-tab>
           <span>Redirects</span>
           <span class="${this._computeBageClass(redirects.length)}">${redirects.length}</span>
-        </paper-tab>
-        <paper-tab>Timings</paper-tab>`}
-      </paper-tabs>
+        </anypoint-tab>
+        <anypoint-tab>Timings</anypoint-tab>`}
+      </anypoint-tabs>
       ${this._selectedTemplate(selectedTab)}
     </iron-collapse>`;
   }
@@ -538,6 +530,10 @@ class ResponseStatusView extends ResponseStatusMixin(LitElement) {
        * Currently selected tab.
        */
       selectedTab: { type: Number },
+      /**
+       * When set renders tabs in a scrollable view.
+       */
+      scrollableTab: { type: Boolean },
       /**
        * The timings object to display request/response timing information
        * as defined in HAR 1.2 spec.
@@ -755,14 +751,14 @@ class ResponseStatusView extends ResponseStatusMixin(LitElement) {
     if (value && this.selectedTab > 1) {
       this.selectedTab = 0;
     }
-    const tabs = this.shadowRoot.querySelector('paper-tabs');
+    const tabs = this.shadowRoot.querySelector('anypoint-tabs');
     if (!tabs) {
       return;
     }
     tabs.notifyResize();
   }
   /**
-   * A handler for the selection change on the paper-tabs elemet.
+   * A handler for the selection change on the anypoint-tabs elemet.
    * @param {CustomEvent} e
    */
   _tabChangeHandler(e) {
