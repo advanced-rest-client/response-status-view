@@ -239,10 +239,6 @@ describe('<response-status-view>', function() {
     it('sets default opened', () => {
       assert.isFalse(element.opened);
     });
-
-    it('sets default iconPrefix', () => {
-      assert.equal(element.iconPrefix, 'arc');
-    });
   });
 
   describe('_statusCodeChanged()', () => {
@@ -362,7 +358,7 @@ describe('<response-status-view>', function() {
       const node = element.shadowRoot.querySelector('.toggle-button');
       node.click();
       await nextFrame();
-      const icon = node.querySelector('iron-icon');
+      const icon = node.querySelector('.icon');
       assert.include(icon.className.trim(), 'toggle-icon opened');
     });
   });
@@ -456,25 +452,6 @@ describe('<response-status-view>', function() {
       const node = element.shadowRoot.querySelectorAll('anypoint-tabs anypoint-tab')[1];
       node.click();
       assert.equal(element.selectedTab, 1);
-    });
-  });
-
-  describe('_computeIcon()', () => {
-    let element;
-    beforeEach(async () => {
-      element = await basicFixture();
-    });
-
-    it('returns passed argument when no prefix', () => {
-      element.iconPrefix = undefined;
-      const result = element._computeIcon('test');
-      assert.equal(result, 'test');
-    });
-
-    it('returns prefixed icon', () => {
-      element.iconPrefix = 'arc';
-      const result = element._computeIcon('test');
-      assert.equal(result, 'arc:test');
     });
   });
 

@@ -11,10 +11,6 @@ describe('<http-source-message-view>', function() {
     return (await fixture(`<http-source-message-view opened></http-source-message-view>`));
   }
 
-  async function iconPrefixFixture() {
-    return (await fixture(`<http-source-message-view iconprefix="other"></http-source-message-view>`));
-  }
-
   describe('opened setter/getter', () => {
     it('sets _opened value', async () => {
       const element = await basicFixture();
@@ -56,18 +52,6 @@ describe('<http-source-message-view>', function() {
     });
   });
 
-  describe('constructor()', () => {
-    it('sets default iconPrefix', async () => {
-      const element = await basicFixture();
-      assert.equal(element.iconPrefix, 'arc');
-    });
-
-    it('changes iconPrefix from the attribute', async () => {
-      const element = await iconPrefixFixture();
-      assert.equal(element.iconPrefix, 'other');
-    });
-  });
-
   describe('toggle()', () => {
     it('changes opened flag to true', async () => {
       const element = await basicFixture();
@@ -83,34 +67,9 @@ describe('<http-source-message-view>', function() {
 
     it('calls toggle when header click', async () => {
       const element = await basicFixture();
-      const node = element.shadowRoot.querySelector('h5');
+      const node = element.shadowRoot.querySelector('.title');
       node.click();
       assert.isTrue(element.opened);
-    });
-  });
-
-  describe('_computeIcon()', () => {
-    let element;
-    beforeEach(async () => {
-      element = await basicFixture();
-    });
-
-    it('returns value for opened and no prefix', () => {
-      element.iconPrefix = undefined;
-      const result = element._computeIcon(true);
-      assert.equal(result, 'expand-less');
-    });
-
-    it('returns value for closed and no prefix', () => {
-      element.iconPrefix = undefined;
-      const result = element._computeIcon(false);
-      assert.equal(result, 'expand-more');
-    });
-
-    it('returns prefixed icon', () => {
-      element.iconPrefix = 'test';
-      const result = element._computeIcon(true);
-      assert.equal(result, 'test:expand-less');
     });
   });
 });
