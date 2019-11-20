@@ -274,7 +274,7 @@ export class StatusMessage {
  * @appliesMixin ResponseStatusMixin
  */
 class ResponseStatusView extends ResponseStatusMixin(LitElement) {
-  static get styles() {
+  get styles() {
     return [
       statusStypes,
       css`:host {
@@ -407,7 +407,7 @@ class ResponseStatusView extends ResponseStatusMixin(LitElement) {
     }
     const isError = !!responseError;
 
-    return html`
+    return html`<style>${this.styles}</style>
     <div class="status-row">
       <div class="status-value status">
       ${isError ?

@@ -25,7 +25,7 @@ import statusStyles from './response-status-styles.js';
  * @appliesMixin ResponseStatusMixin
  */
 class ResponseRedirectsPanel extends ResponseStatusMixin(LitElement) {
-  static get styles() {
+  get styles() {
     return [
       statusStyles,
       css`.status-label {
@@ -70,7 +70,7 @@ class ResponseRedirectsPanel extends ResponseStatusMixin(LitElement) {
   render() {
     const { redirects, narrow } = this;
     const hasRedirects = !!(redirects && redirects.length);
-    return html`
+    return html`<style>${this.styles}</style>
     ${hasRedirects ?
       redirects.map((item, index) =>
         html`<div class="status-row">

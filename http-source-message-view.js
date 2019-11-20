@@ -24,7 +24,7 @@ import { expandLess, expandMore } from '@advanced-rest-client/arc-icons/ArcIcons
  * @memberof UiElements
  */
 class HttpSourceMessageView extends LitElement {
-  static get styles() {
+  get styles() {
     return css`:host {
       overflow: auto;
       display: block;
@@ -54,7 +54,7 @@ class HttpSourceMessageView extends LitElement {
 
   render() {
     const { opened, message, compatibility, toggleIcon } = this;
-    return html`
+    return html`<style>${this.styles}</style>
     <div
       class="title"
       @click="${this.toggle}"
