@@ -412,11 +412,11 @@ class ResponseStatusView extends ResponseStatusMixin(LitElement) {
       <div class="status-value status">
       ${isError ?
         html`<span class="error status-code-value">0</span>
-        ${loadingTime ? html`<span class="response-time">${this._roundTime(loadingTime)} ms</span>` : undefined}
+        ${loadingTime ? html`<span class="response-time">${this._roundTime(loadingTime)} ms</span>` : ''}
         <p class="response-error-label">Error in the response.</p>` :
         html`<div class="status-info text">
           <span class="${this._computeStatusClass(statusCode)}">${statusCode} ${statusMessage}</span>
-          ${loadingTime ? html`<span class="response-time">${this._roundTime(loadingTime)} ms</span>` : undefined}
+          ${loadingTime ? html`<span class="response-time">${this._roundTime(loadingTime)} ms</span>` : ''}
         </div>
         <div class="status-details">
           <anypoint-button
@@ -435,9 +435,9 @@ class ResponseStatusView extends ResponseStatusMixin(LitElement) {
 
     <iron-collapse .opened="${opened}">
       ${requestUrl ? html`<div class="status-url">
-        ${requestMethod ? html`<span class="http-method">${requestMethod}</span>` : undefined}
+        ${requestMethod ? html`<span class="http-method">${requestMethod}</span>` : ''}
         <span class="request-url">${requestUrl}</span>
-      </div>` : undefined}
+      </div>` : ''}
 
       <anypoint-tabs
         .selected="${selectedTab}"
@@ -453,7 +453,7 @@ class ResponseStatusView extends ResponseStatusMixin(LitElement) {
           <span>Request headers</span>
           <span class="${this._computeBageClass(requestHeaders)}">${this._computeHeadersLength(requestHeaders)}</span>
         </anypoint-tab>
-        ${isXhr ? undefined : html`<anypoint-tab ?compatibility="${compatibility}">
+        ${isXhr ? '' : html`<anypoint-tab ?compatibility="${compatibility}">
           <span>Redirects</span>
           <span class="${this._computeBageClass(redirects.length)}">${redirects.length}</span>
         </anypoint-tab>
