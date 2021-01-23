@@ -34,24 +34,5 @@
     "@anypoint-web-components/anypoint-tabs": "^0.1.12",
     "@polymer/iron-collapse": "^3.0.0",
     "lit-element": "^2.4.0"
-  },
-  "devDependencies": {
-    "@advanced-rest-client/arc-definitions": "^3.1.1",
-    "@advanced-rest-client/arc-demo-helper": "^1.0.17",
-    "@advanced-rest-client/testing-karma-sl": "^1.4.2",
-    "@open-wc/testing": "^2.5.29",
-    "@open-wc/testing-karma": "^4.0.8",
-    "@polymer/paper-checkbox": "^3.0.0",
-    "@polymer/paper-input": "^3.2.1",
-    "deepmerge": "^4.2.2",
-    "es-dev-server": "^1.57.7",
-    "karma": "^5.2.3",
-    "sinon": "^9.1.0"
-  },
-  "scripts": {
-    "test": "karma start --coverage",
-    "start": "es-dev-server --app-index demo/index.html --node-resolve --open --watch",
-    "test:watch": "karma start --auto-watch=true --single-run=false",
-    "test:sl": "karma start karma.sl.config.js --compatibility auto --coverage"
   }
 }
